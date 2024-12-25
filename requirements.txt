@@ -22,6 +22,8 @@ pip install notebook
 pip install jupyter
 pip install pandas numpy matplotlib seaborn
 
+python -m notebook
+jupyter notebook
 
 jupyter notebook --version
 pip list
