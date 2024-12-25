@@ -8,8 +8,8 @@ VALID_USERNAME = "admin"
 VALID_PASSWORD = "password123"
 
 @app.route('/')
-def login_page():
-    return render_template('login.html')
+def home_page():
+    return render_template('website.html')
 
 @app.route('/login', methods=['POST'])
 def login():
