@@ -9,15 +9,21 @@ Python Debugger
 Python
 Code Runner
 
+pip install Flask
+pip install mysql-connector-python
+pip install Flask Flask-MySQL
+pip install pillow
+pip install django
+pip install Flask-WTF
 
-pip list
-pip install flask flask-mysqldb pandas jupyter
-pip install jupyter
 pip install notebook
+pip install jupyter
+
+pip install flask flask-mysqldb pandas jupyter
 pip install pandas numpy matplotlib seaborn
 
 
 jupyter notebook --version
-
+pip list
 
 
