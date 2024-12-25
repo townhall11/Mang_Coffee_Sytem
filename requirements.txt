@@ -1,0 +1,23 @@
+https://www.python.org/downloads/
+
+python --version
+
+
+VSCODE EXTENSION
+
+Python Debugger
+Python
+Code Runner
+
+
+pip list
+pip install flask flask-mysqldb pandas jupyter
+pip install jupyter
+pip install notebook
+pip install pandas numpy matplotlib seaborn
+
+
+jupyter notebook --version
+
+
+
