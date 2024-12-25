@@ -7,10 +7,12 @@ app = Flask(__name__)
 VALID_USERNAME = "admin"
 VALID_PASSWORD = "password123"
 
+# code here in website
 @app.route('/')
 def home_page():
     return render_template('website.html')
 
+# code here in login
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
