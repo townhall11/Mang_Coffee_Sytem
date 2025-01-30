@@ -10,7 +10,7 @@ VALID_PASSWORD = "password123"
 # code here in website
 @app.route('/')
 def home_page():
-    return render_template('website.html')
+    return render_template('index.html')
 
 # code here in login
 @app.route('/login', methods=['POST'])
