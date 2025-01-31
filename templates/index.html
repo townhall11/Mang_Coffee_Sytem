@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>complete responsive coffee website design tutorial</title>
+    <title>MANG JUAN COFFEE WEBSITE</title>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
 
@@ -14,17 +14,54 @@
     <!-- custom css file link  -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/logo_mangjuan.png') }}">
 </head>
 <body>
-    
+    <style>
+        header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #8B4513; /* Coffee Brown */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.logo img {
+    height: 50px; /* Adjust as needed */
+    width: auto;
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.logo i {
+    margin-left: 8px;
+    font-size: 22px;
+    color: #FFD700; /* Gold color for the coffee icon */
+}
+
+    </style>
 <!-- header section starts  -->
 
 <header class="header">
 
     <div id="menu-btn" class="fas fa-bars"></div>
 
-    <a href="#" class="logo"> coffee <i class="fas fa-mug-hot"></i> </a>
+
+    <a href="#" class="logo">
+        <img src="{{ url_for('static', filename='image/logo_mangjuan.png') }}" alt="Mang Juan Coffee Logo">
+        MANG JUAN COFFEE
+    </a>
+
+
 
     <nav class="navbar">
         <a href="#home">home</a>
@@ -47,7 +84,7 @@
     <div class="row">
 
         <div class="content">
-            <h3>fresh coffee in the morning</h3>
+            <h3><small>fresh coffee all day and night.</small></h3>
             <a href="#" class="btn">buy one now</a>
         </div>
 
@@ -76,12 +113,12 @@
     <div class="row">
 
         <div class="image">
-            <img src="image/about-img.png" alt="">
+            <img src="{{ url_for('static', filename='image/mangjuan.png') }}" alt="">
         </div>
 
         <div class="content">
-            <h3 class="title">what's make our coffee special!</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Esse et commodi, ad, doloremque obcaecati maxime quam minima dolore mollitia saepe quos, debitis incidunt. Itaque possimus adipisci ipsam harum at autem.</p>
+            <h3 class="title">"What Makes Our Coffee Special?" ☕✨</h3>
+            <p>Our coffee is crafted with passion, using only the finest, ethically sourced beans, roasted to perfection for a rich, smooth, and bold flavor. Every cup delivers a unique experience, blending aroma, taste, and freshness in perfect harmony. Whether you love a strong espresso or a creamy latte, our coffee is made to elevate your day—one sip at a time.🌿☕💛 </p>
             <a href="#" class="btn">read more</a>
             <div class="icons-container">
                 <div class="icons">
@@ -116,54 +153,71 @@
         <a href="#" class="box">
             <img src="{{ url_for('static', filename='image/menu-1.png') }}" alt="">
             <div class="content">
-                <h3>our special coffee</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam, id.</p>
-                <span>$8.99</span>
+                <h3>Barako Coffee (Kapeng Barako)</h3>
+                <p>A strong and bold coffee variety made from Liberica beans, primarily grown in Batangas and Cavite.Known for its intense aroma, smoky, and slightly fruity flavor.Often served black or with muscovado sugar.</p>
+                <span>₱20.00</span>
             </div>
         </a>
 
         <a href="#" class="box">
             <img src="{{ url_for('static', filename='image/menu-2.png') }}" alt="">
             <div class="content">
-                <h3>our special coffee</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam, id.</p>
-                <span>$8.99</span>
+                <h3>Benguet Coffee</h3>
+                <p>A type of Arabica coffee grown in the highlands of Benguet, Cordillera region.Has a smooth, mildly sweet, and nutty flavor with hints of chocolate.One of the most sought-after premium coffees in the country.</p>
+                <span>₱30.00</span>
             </div>
         </a>
 
         <a href="#" class="box">
             <img src="{{ url_for('static', filename='image/menu-3.png') }}" alt="">
             <div class="content">
-                <h3>our special coffee</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam, id.</p>
-                <span>$8.99</span>
+                <h3>Sagada Coffee</h3>
+                <p>Another Arabica coffee variety grown in Sagada, Mountain Province.Known for its fruity, floral notes, and balanced acidity.Often compared to Benguet coffee but has a slightly more complex taste.</p>
+                <span>₱40.00</span>
             </div>
         </a>
 
         <a href="#" class="box">
             <img src="{{ url_for('static', filename='image/menu-4.png') }}" alt="">
             <div class="content">
-                <h3>our special coffee</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam, id.</p>
-                <span>$8.99</span>
+                <h3>Sulu Coffee (Kapeng Sulu or Kahawa Sug)</h3>
+                <p>A traditional coffee from Sulu, Mindanao, made from Robusta beans.Typically served strong and black.A staple drink in the Tausug community, often paired with native delicacies like Bangbang Sug.</p>
+                <span>₱50.00</span>
             </div>
         </a>
 
         <a href="#" class="box">
             <img src="{{ url_for('static', filename='image/menu-5.png') }}" alt="">
             <div class="content">
-                <h3>our special coffee</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam, id.</p>
-                <span>$8.99</span>
+                <h3>Kalinga Coffee</h3>
+                <p>Grown in the Kalinga province in the Cordilleras, mainly from Robusta and Arabica beans.Has a bold and slightly bitter taste with a hint of nuttiness.Traditionally brewed in a clay pot over fire.</p>
+                <span>₱70.00</span>
             </div>
         </a>
 
         <a href="#" class="box">
             <img src="{{ url_for('static', filename='image/menu-6.png') }}" alt="">
             <div class="content">
-                <h3>our special coffee</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam, id.</p>
-                <span>$8.99</span>
+                <h3>Excelsa Coffee</h3>
+                <p>A rare coffee variety also grown in some parts of Luzon and Mindanao.Known for its unique, fruity, and tart flavor with a mild bitterness.Often blended with other coffee types to enhance complexity.</p>
+                <span>₱80.00</span>
+            </div>
+        </a>
+
+         <a href="#" class="box">
+            <img src="{{ url_for('static', filename='image/menu-6.png') }}" alt="">
+            <div class="content">
+                <h3>Mount Apo Coffee</h3>
+                <p>Grown in the fertile lands of Mt. Apo, Mindanao.A high-quality Arabica coffee with a smooth, chocolatey, and slightly acidic taste.One of the most expensive Philippine coffee varieties.</p>
+                <span>₱90.00</span>
+            </div>
+        </a>
+         <a href="#" class="box">
+            <img src="{{ url_for('static', filename='image/menu-6.png') }}" alt="">
+            <div class="content">
+                <h3>Musang Coffee (Civet Coffee or Kape Alamid)</h3>
+                <p>Made from coffee beans that have been eaten and fermented in the digestive system of civet cats before being collected.Known for its smooth, less acidic, and chocolatey taste.One of the rarest and most expensive coffees in the world.</p>
+                <span>₱100.00</span>
             </div>
         </a>
 
@@ -186,7 +240,7 @@
             <div class="swiper-slide box">
                 <i class="fas fa-quote-left"></i>
                 <i class="fas fa-quote-right"></i>
-                <img src="{{ url_for('static', filename='image/pic-1.png') }}" alt="">
+                <img src="{{ url_for('static', filename='image/Joiling.jpg') }}" alt="">
                 <div class="stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -194,15 +248,15 @@
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore aliquid eveniet qui, similique aut sit.</p>
-                <h3>john deo</h3>
-                <span>satisfied client</span>
+                <p>"Every sip is a delight! The rich aroma, the perfect balance of flavors, and the cozy ambiance make this my go-to coffee spot. Truly a great place to relax and enjoy a quality cup of coffee. Highly recommended!" ☕✨</p>
+                <h3>Joiling Ford</h3>
+                <span>Regular Client</span>
             </div>
 
             <div class="swiper-slide box">
                 <i class="fas fa-quote-left"></i>
                 <i class="fas fa-quote-right"></i>
-                <img src="{{ url_for('static', filename='image/pic-2.png') }}" alt="">
+                <img src="{{ url_for('static', filename='image/macky.png') }}" alt="">
                 <div class="stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -210,15 +264,15 @@
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore aliquid eveniet qui, similique aut sit.</p>
-                <h3>john deo</h3>
-                <span>satisfied client</span>
+                <p>"The best coffee experience I’ve ever had! The flavors are bold yet balanced, and the attention to detail in every cup is amazing. You can tell they truly care about quality. Highly recommended!" 🌟🌟🌟🌟🌟"</p>
+                <h3>Macky</h3>
+                <span>Regular  Client</span>
             </div>
 
             <div class="swiper-slide box">
                 <i class="fas fa-quote-left"></i>
                 <i class="fas fa-quote-right"></i>
-                <img src="{{ url_for('static', filename='image/pic-3.png') }}" alt="">
+                <img src="{{ url_for('static', filename='image/Destroyer.jpg') }}" alt="">
                 <div class="stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -226,15 +280,15 @@
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore aliquid eveniet qui, similique aut sit.</p>
-                <h3>john deo</h3>
-                <span>satisfied client</span>
+                <p>"Absolutely love this place! The coffee is always rich and smooth, and the pastries are a perfect match. Whether I’m working, catching up with friends, or just enjoying some quiet time, this is my go-to spot!" 🍪☕</p>
+                <h3>Destroyer</h3>
+                <span>Regular Client</span>
             </div>
 
             <div class="swiper-slide box">
                 <i class="fas fa-quote-left"></i>
                 <i class="fas fa-quote-right"></i>
-                <img src="{{ url_for('static', filename='image/pic-4.png') }}" alt="">
+                <img src="{{ url_for('static', filename='image/john.png') }}" alt="">
                 <div class="stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -242,8 +296,8 @@
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore aliquid eveniet qui, similique aut sit.</p>
-                <h3>john deo</h3>
+                <p>"The best coffee experience I’ve ever had! The flavors are bold yet balanced, and the attention to detail in every cup is amazing. You can tell they truly care about quality. Highly recommended!" 🌟🌟🌟🌟🌟</p>
+                <h3>John Wick</h3>
                 <span>satisfied client</span>
             </div>
 
@@ -287,11 +341,11 @@
 
         <div class="box">
             <h3>our branches</h3>
-            <a href="#"> <i class="fas fa-arrow-right"></i> india </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> USA </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> france </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> africa </a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> Japan </a>
+            <a href="#"> <i class="fas fa-arrow-right"></i> BANTAYAN </a>
+            <a href="#"> <i class="fas fa-arrow-right"></i> MADRIDEJOS </a>
+            <a href="#"> <i class="fas fa-arrow-right"></i> SANTA FE </a>
+            <a href="#"> <i class="fas fa-arrow-right"></i> CEBU CITY </a>
+            <a href="#"> <i class="fas fa-arrow-right"></i> MANILA </a>
         </div>
 
         <div class="box">
@@ -305,16 +359,15 @@
 
         <div class="box">
             <h3>contact info</h3>
-            <a href="#"> <i class="fas fa-phone"></i> +123-456-7890 </a>
-            <a href="#"> <i class="fas fa-phone"></i> +111-222-3333 </a>
-            <a href="#"> <i class="fas fa-envelope"></i> razishah918@@gmail.com </a>
-            <a href="#"> <i class="fas fa-envelope"></i> Noakhali,Dhaka,Bangladesh. </a>
+            <a href="#"> <i class="fas fa-phone"></i> +888-076-0269 </a>
+            <a href="#"> <i class="fas fa-phone"></i> +639107608391 </a>
+            <a href="#"> <i class="fas fa-envelope"></i> Mangjuan@gmail.com </a>
+            <a href="#"> <i class="fas fa-envelope"></i> Bantayan Island,Cebu </a>
         </div>
 
         <div class="box">
             <h3>contact info</h3>
             <a href="#"> <i class="fab fa-facebook-f"></i> facebook </a>
-            <a href="#"> <i class="fab fa-twitter"></i> twitter </a>
             <a href="#"> <i class="fab fa-twitter"></i> twitter </a>
             <a href="#"> <i class="fab fa-instagram"></i> instagram </a>
             <a href="#"> <i class="fab fa-linkedin"></i> linkedin </a>
@@ -322,43 +375,21 @@
 
     </div>
 
-    <div class="credit"> creatd by <span>MD.RAZI-SHAH</span> | all rights reserved </div>
+    <div class="credit">Copyright © 2025  Mang Juan Coffee System </div>
 
 </section>
 
 <!-- footer section ends -->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
 
 <!-- custom js file link  -->
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 </html>
