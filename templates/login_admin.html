@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANG JUAN COFFEE WEBSITE</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/logo_mangjuan.png') }}">
+</head>
+<body>
+    <style>
+        header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #8B4513; /* Coffee Brown */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.logo img {
+    height: 50px; /* Adjust as needed */
+    width: auto;
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.logo i {
+    margin-left: 8px;
+    font-size: 22px;
+    color: #FFD700; /* Gold color for the coffee icon */
+}
+
+    </style>
+<!-- header section starts  -->
+
+<header class="header">
+
+    <div id="menu-btn" class="fas fa-bars"></div>
+
+
+    <a href="#" class="logo">
+        <img src="{{ url_for('static', filename='image/logo_mangjuan.png') }}" alt="Mang Juan Coffee Logo">
+        MANG JUAN COFFEE
+    </a>
+
+
+
+   
+
+</header>
+
+<!-- header section ends -->
+
+<!-- home section starts  -->
+
+
+<!-- home section ends -->
+
+<!-- about section starts  -->
+
+
+
+<!-- about section ends -->
+
+<!-- menu section starts  -->
+
+<!-- menu section ends -->
+
+<!-- review section starts  -->
+
+<section class="review" id="review">
+ <br>
+</section>
+
+<!-- review section ends -->
+
+<!-- book section starts  -->
+
+<section class="book" id="book">
+    <h1 class="heading">____<span>ADMINISTRATOR</span></h1>
+
+    <form action="{{ url_for('login_customer') }}" method="POST">
+        <input type="email" name="email" placeholder="Email" class="box" required>
+
+        <div class="password-container">
+            <input type="password" name="password" id="password" placeholder="Password" class="box" required>
+            <i class="fa fa-eye" id="togglePassword"></i>
+        </div>
+
+        <input type="submit" value="Login" class="btn">
+        <button type="button" class="btn" onclick="window.location.href='{{ url_for('home') }}'">Cancel</button>
+
+        <br><br>
+    </form>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+</section>
+
+<!-- Font Awesome for the eye icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- JavaScript for password toggle -->
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
+
+<!-- CSS for better alignment -->
+<style>
+    .password-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-container input {
+        flex: 1;
+        padding-right: 40px;
+    }
+
+    .password-container i {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        color: #555;
+    }
+</style>
+
+<!-- book section ends -->
+
+<!-- footer section starts  -->
+
+<section class="footer">
+
+    <div class="box-container">
+
+    <div class="credit">Copyright © 2025  Mang Juan Coffee System </div>
+
+</section>
+
+<!-- footer section ends -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
+<!-- custom js file link  -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
