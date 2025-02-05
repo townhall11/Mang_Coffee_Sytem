@@ -109,13 +109,24 @@
 <section class="book" id="book">
     <h1 class="heading">____<span>CREATE NEW ADMIN</span></h1>
 
-     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+     <!-- Flash Messages with SweetAlert -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                {% for category, message in messages %}
+                    Swal.fire({
+                        icon: "{{ category }}", // success, error, warning, info
+                        title: "{{ message }}",
+                        showConfirmButton: true,
+                        timer: 3000 // Auto-close after 3 seconds
+                    });
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+{% endwith %}
 
     <form action="{{ url_for('register_admin') }}" method="POST" onsubmit="return validateForm()">
         <input type="text" name="firstname" placeholder="First Name" class="box" required>
@@ -143,10 +154,9 @@
 
     <!-- Agreement Checkbox on a New Line -->
     <div class="agreement">
-        <input type="checkbox" id="agreement" required>
-        <label for="agreement">I agree and accept the terms and conditions</label>
+    <input type="checkbox" id="agreement">
+    <label for="agreement">I agree and accept the <a href="#" onclick="showTerms()">terms and conditions</a></label>
     </div>
-
         <input type="submit" value="Register" class="btn">
         <button type="button" class="btn" onclick="window.location.href='{{ url_for('login_admin') }}'">Cancel</button>
 
@@ -156,6 +166,8 @@
 </section>
 
 <!-- Font Awesome for the eye icon -->
+<!-- SweetAlert Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 <!-- JavaScript for password toggle -->
@@ -173,32 +185,77 @@
         confirmPasswordField.type = confirmPasswordField.type === "password" ? "text" : "password";
     });
 
-    function validateForm() {
-        let password = document.getElementById("password").value;
-        let confirmPassword = document.getElementById("confirm_password").value;
-        let agreementChecked = document.getElementById("agreement").checked;
+   function validateForm() {
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirm_password").value;
+    let agreementChecked = document.getElementById("agreement").checked;
 
-        // Password strength check: Min 8 characters, at least 1 symbol
-        let passwordPattern = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-        if (!passwordPattern.test(password)) {
-            alert("Password must be at least 8 characters long and include at least one special symbol.");
-            return false;
-        }
-
-        // Check if passwords match
-        if (password !== confirmPassword) {
-            alert("Passwords do not match.");
-            return false;
-        }
-
-        // Check agreement
-        if (!agreementChecked) {
-            alert("You must agree to the terms and conditions.");
-            return false;
-        }
-
-        return true;
+    // Password strength check: Min 8 characters, at least 1 symbol
+    let passwordPattern = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    
+    if (!passwordPattern.test(password)) {
+        Swal.fire({
+            icon: "error",
+            title: "Weak Password!",
+            text: "Password must be at least 8 characters long and include at least one special symbol.",
+            confirmButtonColor: "#d33"
+        });
+        return false;
     }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        Swal.fire({
+            icon: "error",
+            title: "Password Mismatch!",
+            text: "Passwords do not match. Please try again.",
+            confirmButtonColor: "#d33"
+        });
+        return false;
+    }
+
+    // Check agreement checkbox
+    if (!agreementChecked) {
+        Swal.fire({
+            icon: "warning",
+            title: "Agreement Required!",
+            text: "You must agree to the terms and conditions before proceeding.",
+            confirmButtonColor: "#f39c12"
+        });
+        return false;
+    }
+
+    // If all checks pass, show success message
+    Swal.fire({
+        icon: "success",
+        title: "Form Validated!",
+        text: "Your form has been successfully validated.",
+        confirmButtonColor: "#28a745"
+    });
+
+    return true;
+}
+
+  // Show Terms & Conditions with Auto-Check Feature
+    function showTerms() {
+        Swal.fire({
+            title: "Terms and Conditions",
+            html: "<p>By using this service, you agree to our terms and conditions.</p><p>Please read carefully before proceeding.</p>",
+            icon: "info",
+            confirmButtonText: "I Agree"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("agreement").checked = true;
+                document.getElementById("registrationForm").style.display = "block";
+            }
+        });
+    }
+
+    // Show form only when checkbox is checked
+    document.getElementById("agreement").addEventListener("change", function() {
+        let form = document.getElementById("registrationForm");
+        form.style.display = this.checked ? "block" : "none";
+    });
 </script>
 
 <!-- CSS Styling -->
@@ -234,6 +291,7 @@
         margin-left: 5px;
         font-size: 14px;
     }
+
 </style>
 
 
