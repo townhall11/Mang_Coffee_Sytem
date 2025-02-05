@@ -29,3 +29,12 @@ jupyter notebook --version
 pip list
 
 
+
+category for system
+
+1.Website
+2.Sweetalerts
+3.Login Forms
+4.Dashboard with data analytics
+5.CRUD and Reports
+6.One Whole Process
