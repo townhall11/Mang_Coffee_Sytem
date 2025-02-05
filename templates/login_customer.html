@@ -47,6 +47,18 @@
     font-size: 22px;
     color: #FFD700; /* Gold color for the coffee icon */
 }
+.link {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
 
     </style>
 <!-- header section starts  -->
@@ -107,11 +119,15 @@
 
         <input type="submit" value="Login" class="btn">
         <button type="button" class="btn" onclick="window.location.href='{{ url_for('home') }}'">Cancel</button>
-
-        <br><br>
+              <!-- Create New Admin Link -->
+        <div style="margin-top: 30px;">
+            <a href="{{ url_for('register_customer') }}" class="link">Create New Account</a>
+             <a href="#" class="link">Forgot Password?</a>
+        </div>
+   
     </form>
 
-    <br><br><br><br><br><br><br><br><br><br><br><br>
+      <br><br>  <br><br>  <br><br>  <br><br>
 </section>
 
 <!-- Font Awesome for the eye icon -->

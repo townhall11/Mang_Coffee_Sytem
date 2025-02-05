@@ -4,9 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
-        user="your_username",
-        password="your_password",
-        database="your_database"
+        user="root",
+        password="",
+        database="coffee_db"
     )
 
 # Admin Login
