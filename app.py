@@ -89,9 +89,10 @@ def register_customer():
         firstname = request.form["firstname"]
         lastname = request.form["lastname"]
         email = request.form["email"]
+        address = request.form["address"]
         password = request.form["password"]
-
-        create_customer(firstname, lastname, email, password)
+      
+        create_customer(firstname, lastname, email, password, address)
         flash("Customer registered successfully!", "success")
         return redirect(url_for("login_customer"))
 

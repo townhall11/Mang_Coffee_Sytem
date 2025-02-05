@@ -1,6 +1,7 @@
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# connection on database mysql
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -55,13 +56,13 @@ def create_admin(firstname, lastname, email, password, role):
     conn.close()
 
 # Register Customer
-def create_customer(firstname, lastname, email, password):
+def create_customer(firstname, lastname, email, address, password):
     conn = get_db_connection()
     cursor = conn.cursor()
     
     hashed_password = generate_password_hash(password)
-    query = "INSERT INTO customers (firstname, lastname, email, password) VALUES (%s, %s, %s, %s)"
-    cursor.execute(query, (firstname, lastname, email, hashed_password))
+    query = "INSERT INTO customers (firstname, lastname, email, address, password) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(query, (firstname, lastname, address, email, hashed_password))
     
     conn.commit()
     cursor.close()

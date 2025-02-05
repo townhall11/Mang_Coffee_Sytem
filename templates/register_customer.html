@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANG JUAN COFFEE WEBSITE</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/logo_mangjuan.png') }}">
+</head>
+<body>
+    <style>
+        header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #8B4513; /* Coffee Brown */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.logo img {
+    height: 50px; /* Adjust as needed */
+    width: auto;
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.logo i {
+    margin-left: 8px;
+    font-size: 22px;
+    color: #FFD700; /* Gold color for the coffee icon */
+}
+.link {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+    </style>
+<!-- header section starts  -->
+
+<header class="header">
+
+    <div id="menu-btn" class="fas fa-bars"></div>
+
+
+    <a href="#" class="logo">
+        <img src="{{ url_for('static', filename='image/logo_mangjuan.png') }}" alt="Mang Juan Coffee Logo">
+        MANG JUAN COFFEE
+    </a>
+
+
+
+   
+
+</header>
+
+<!-- header section ends -->
+
+<!-- home section starts  -->
+
+
+<!-- home section ends -->
+
+<!-- about section starts  -->
+
+
+
+<!-- about section ends -->
+
+<!-- menu section starts  -->
+
+<!-- menu section ends -->
+
+<!-- review section starts  -->
+
+<section class="review" id="review">
+ <br>
+</section>
+
+<!-- review section ends -->
+
+<!-- book section starts  -->
+
+<section class="book" id="book">
+    <h1 class="heading">____<span>CREATE NEW ACCOUNT</span></h1>
+
+     <!-- Flash Messages with SweetAlert -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                {% for category, message in messages %}
+                    Swal.fire({
+                        icon: "{{ category }}", // success, error, warning, info
+                        title: "{{ message }}",
+                        showConfirmButton: true,
+                        timer: 3000 // Auto-close after 3 seconds
+                    });
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+
+    <form action="{{ url_for('register_customer') }}" method="POST" onsubmit="return validateForm()">
+        <input type="text" name="firstname" placeholder="First Name" class="box" required>
+        <input type="text" name="lastname" placeholder="Last Name" class="box" required>
+        <input type="email" name="email" placeholder="Email" class="box" required>
+        <input type="text" name="address" placeholder="Address" class="box" required>
+
+           <!-- Password Input with Validation -->
+    <div class="password-container">
+        <input type="password" name="password" id="password" placeholder="Password (min 8 chars, 1 symbol)" class="box" required>
+        <i class="fa fa-eye" id="togglePassword"></i>
+    </div>
+
+    <!-- Retype Password -->
+    <div class="password-container">
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Retype Password" class="box" required>
+        <i class="fa fa-eye" id="toggleConfirmPassword"></i>
+    </div>
+
+    <!-- Role Dropdown -->
+    
+
+    <!-- Agreement Checkbox on a New Line -->
+    <div class="agreement">
+    <input type="checkbox" id="agreement">
+    <label for="agreement">I agree and accept the <a href="#" onclick="showTerms()">terms and conditions</a></label>
+    </div>
+        <input type="submit" value="Register" class="btn">
+        <button type="button" class="btn" onclick="window.location.href='{{ url_for('login_customer') }}'">Cancel</button>
+
+        <br><br>
+    </form>
+      <br><br>  <br><br>  <br><br>  <br><br>
+</section>
+
+<!-- Font Awesome for the eye icon -->
+<!-- SweetAlert Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- JavaScript for password toggle -->
+
+<!-- CSS for better alignment -->
+<!-- JavaScript for Password Validation -->
+<script>
+    document.getElementById("togglePassword").addEventListener("click", function() {
+        let passwordField = document.getElementById("password");
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
+    });
+
+    document.getElementById("toggleConfirmPassword").addEventListener("click", function() {
+        let confirmPasswordField = document.getElementById("confirm_password");
+        confirmPasswordField.type = confirmPasswordField.type === "password" ? "text" : "password";
+    });
+
+   function validateForm() {
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirm_password").value;
+    let agreementChecked = document.getElementById("agreement").checked;
+
+    // Password strength check: Min 8 characters, at least 1 symbol
+    let passwordPattern = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    
+    if (!passwordPattern.test(password)) {
+        Swal.fire({
+            icon: "error",
+            title: "Weak Password!",
+            text: "Password must be at least 8 characters long and include at least one special symbol.",
+            confirmButtonColor: "#d33"
+        });
+        return false;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        Swal.fire({
+            icon: "error",
+            title: "Password Mismatch!",
+            text: "Passwords do not match. Please try again.",
+            confirmButtonColor: "#d33"
+        });
+        return false;
+    }
+
+    // Check agreement checkbox
+    if (!agreementChecked) {
+        Swal.fire({
+            icon: "warning",
+            title: "Agreement Required!",
+            text: "You must agree to the terms and conditions before proceeding.",
+            confirmButtonColor: "#f39c12"
+        });
+        return false;
+    }
+
+    // If all checks pass, show success message
+    Swal.fire({
+        icon: "success",
+        title: "Form Validated!",
+        text: "Your form has been successfully validated.",
+        confirmButtonColor: "#28a745"
+    });
+
+    return true;
+}
+
+  // Show Terms & Conditions with Auto-Check Feature
+    function showTerms() {
+        Swal.fire({
+            title: "Terms and Conditions",
+            html: "<p>By using this service, you agree to our terms and conditions.</p><p>Please read carefully before proceeding.</p>",
+            icon: "info",
+            confirmButtonText: "I Agree"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("agreement").checked = true;
+                document.getElementById("registrationForm").style.display = "block";
+            }
+        });
+    }
+
+    // Show form only when checkbox is checked
+    document.getElementById("agreement").addEventListener("change", function() {
+        let form = document.getElementById("registrationForm");
+        form.style.display = this.checked ? "block" : "none";
+    });
+</script>
+
+<!-- CSS Styling -->
+<style>
+    .box {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .password-container {
+        position: relative;
+    }
+
+    .password-container i {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .agreement {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .agreement label {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+
+</style>
+
+
+<!-- book section ends -->
+
+<!-- footer section starts  -->
+
+<section class="footer">
+
+    <div class="box-container">
+
+    <div class="credit">Copyright © 2025  Mang Juan Coffee System </div>
+
+</section>
+
+<!-- footer section ends -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+
+<!-- custom js file link  -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
