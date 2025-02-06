@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from db import check_admin_login, check_customer_login, create_admin, create_customer
+from db import get_db_connection  # ✅ Import database connection from db.py
 
 app = Flask(__name__)
 app.secret_key = "AB_Is_Officially_Out"
@@ -43,6 +44,8 @@ def login_customer():
         if customer:
             session["customer_id"] = customer["id"]
             session["customer_name"] = customer["firstname"]
+            session["cus_lastname"] = customer["lastname"]
+
             flash("Customer Login successful!", "success")
             return redirect(url_for("customer_dashboard"))
         else:
@@ -114,6 +117,61 @@ def register_customer():
             return redirect(url_for("login_customer"))
 
     return render_template("register_customer.html")
+
+# View All Admin Accounts
+@app.route("/admin_accounts")
+def admin_accounts():
+    if "admin_id" not in session:
+        flash("Please log in first!", "danger")
+        return redirect(url_for("login_admin"))
+
+    # Fetch all admin accounts from the database
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM admin")
+    all_acc = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_acc.html", all_acc=all_acc)
+
+# Edit Admin Accounts
+@app.route("/edit_admin/<int:admin_id>", methods=["GET", "POST"])
+def edit_admin(admin_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == "POST":
+        firstname = request.form["firstname"]
+        lastname = request.form["lastname"]
+        email = request.form["email"]
+
+        cursor.execute("UPDATE admin SET firstname=%s, lastname=%s, email=%s WHERE id=%s",
+                       (firstname, lastname, email, admin_id))
+        conn.commit()
+        conn.close()
+
+        flash("Admin details updated successfully!", "success")
+        return redirect(url_for("admin_accounts"))
+
+    cursor.execute("SELECT * FROM admin WHERE id = %s", (admin_id,))
+    admin = cursor.fetchone()
+    conn.close()
+
+    return render_template("edit_admin.html", admin=admin)
+
+
+# Delete Admin Accounts
+@app.route("/delete_admin/<int:admin_id>", methods=["POST"])
+def delete_admin(admin_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM admin WHERE id = %s", (admin_id,))
+    conn.commit()
+    conn.close()
+
+    flash("Admin account deleted successfully!", "success")
+    return redirect(url_for("admin_accounts"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Dashboard-MANG JUAN COFFEE</title>
+  <title>Admin Dashboard-MANG JUAN COFFEE</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -168,7 +168,27 @@
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
   <!-- SweetAlert2 JS -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const alertType = queryParams.get('alertType');
+    const alertMessage = queryParams.get('alertMessage');
 
+    if (alertType && alertMessage) {
+        Swal.fire({
+            icon: alertType,
+            title: alertType.charAt(0).toUpperCase() + alertType.slice(1),
+            text: alertMessage
+        });
+    }
+});
+
+  $(document).ready(function() {
+    $('#accountsTable').DataTable({
+      responsive: true
+    });
+  });
+</script>
 </body>
 
 </html>
