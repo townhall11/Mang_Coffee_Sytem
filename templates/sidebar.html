@@ -15,7 +15,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " id="nav-hov" href="{{ url_for('home') }}">
+        <a class="nav-link " id="nav-hov" href="{{ url_for('admin_dashboard') }}">
           <i class="bi bi-grid text-black fw-bold"></i>
           <span class="text-black fw-bold">Dashboard</span>
         </a>
@@ -23,13 +23,13 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" id="nav-hov" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide text-black fw-bold"></i><span class="text-black fw-bold">Teachers</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+          <i class="bi bi-menu-button-wide text-black fw-bold"></i><span class="text-black fw-bold">Manage Category</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
      
           <li>
             <a href="" id="nav-hov">
-              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">View All Records</span>
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">View All Category</span>
             </a>
           </li> 
         </ul>
@@ -37,7 +37,7 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text text-black fw-bold"></i><span class="text-black fw-bold">Students</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+          <i class="bi bi-journal-text text-black fw-bold"></i><span class="text-black fw-bold">Manage Product</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
        
@@ -48,28 +48,66 @@
           </li>
         </ul>
       </li>
+         <li class="nav-item">
+        <a class="nav-link collapsed" id="nav-hov"data-bs-toggle="collapse" href="#">
+          <i class="bi bi-archive text-black fw-bold"></i>
+          <span class="text-black fw-bold">Point Of Sale</span>
+        </a>
 
+      </li><!-- End Archived Nav -->
+      
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" id="nav-hov"data-bs-toggle="collapse" href="#">
+          <i class="bi bi-people text-black fw-bold"></i>
+          <span class="text-black fw-bold">Manage Order</span>
+        </a>
+
+      </li><!-- End Archived Nav -->
     
          <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-person text-black fw-bold"></i><span class="text-black fw-bold">Manage Accounts</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+          <i class="bi bi-people text-black fw-bold"></i><span class="text-black fw-bold">Manage Accounts</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
         </a>
         <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
            <li>
             <a href="" id="nav-hov">
-              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Teachers Approval</span>
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Customer</span>
+            </a>
+          </li>
+          <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Admin</span>
             </a>
           </li>
     
         </ul>
       </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" id="nav-hov" href="">
-          <i class="bi bi-archive text-black fw-bold"></i>
-          <span class="text-black fw-bold">Archived</span>
+       
+         <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#icons-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text text-black fw-bold"></i><span class="text-black fw-bold">Manage Reports</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
         </a>
-      </li><!-- End Archived Nav -->
+        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+           <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Daily</span>
+            </a>
+          </li>
+          <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Weekly</span>
+            </a>
+          </li>
+           <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Monthly</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      
 
     </ul>
 
