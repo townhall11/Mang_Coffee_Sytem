@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from db import check_admin_login, check_customer_login, create_admin, create_customer
 from db import get_db_connection  # ✅ Import database connection from db.py
+from werkzeug.security import generate_password_hash
+from flask import request, jsonify
+import pymysql  # Ensure you're using the right MySQL connector
+
+
 
 app = Flask(__name__)
 app.secret_key = "AB_Is_Officially_Out"
@@ -135,29 +140,55 @@ def admin_accounts():
     return render_template("admin_acc.html", all_acc=all_acc)
 
 # Edit Admin Accounts
-@app.route("/edit_admin/<int:admin_id>", methods=["GET", "POST"])
-def edit_admin(admin_id):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+@app.route("/edit_admin", methods=["POST"])
+def edit_admin():
+    try:
+        admin_id = request.form.get("admin_id")
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+        new_password = request.form.get("new_password")
 
-    if request.method == "POST":
-        firstname = request.form["firstname"]
-        lastname = request.form["lastname"]
-        email = request.form["email"]
+        # Debugging: Print received data
+        print(f"Admin ID: {admin_id}, Firstname: {firstname}, Lastname: {lastname}, Email: {email}, Password: {new_password}")
 
-        cursor.execute("UPDATE admin SET firstname=%s, lastname=%s, email=%s WHERE id=%s",
-                       (firstname, lastname, email, admin_id))
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if new_password is provided
+        if new_password and new_password.strip():
+            hashed_password = generate_password_hash(new_password)
+            cursor.execute("""
+                UPDATE admin 
+                SET firstname = %s, lastname = %s, email = %s, password = %s
+                WHERE id = %s
+            """, (firstname, lastname, email, hashed_password, admin_id))
+        else:
+            cursor.execute("""
+                UPDATE admin 
+                SET firstname = %s, lastname = %s, email = %s 
+                WHERE id = %s
+            """, (firstname, lastname, email, admin_id))
+
         conn.commit()
+
+        # Debugging: Check if update was successful
+        if cursor.rowcount > 0:
+            print("Update successful")
+            response = {"success": True, "message": "Admin details updated successfully!"}
+        else:
+            print("No rows affected")
+            response = {"success": False, "message": "No changes detected or incorrect admin ID."}
+
+    except Exception as e:
+        print("Error:", e)
+        response = {"success": False, "message": str(e)}
+
+    finally:
+        cursor.close()
         conn.close()
 
-        flash("Admin details updated successfully!", "success")
-        return redirect(url_for("admin_accounts"))
-
-    cursor.execute("SELECT * FROM admin WHERE id = %s", (admin_id,))
-    admin = cursor.fetchone()
-    conn.close()
-
-    return render_template("edit_admin.html", admin=admin)
+    return jsonify(response)
 
 
 # Delete Admin Accounts

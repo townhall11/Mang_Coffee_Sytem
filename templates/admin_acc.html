@@ -83,8 +83,9 @@
                                 <td>{{ account.role }}</td>
                                 <td>
                                     <!-- Edit Button -->
-                                    <a href="{{ url_for('edit_admin', admin_id=account.id) }}" class="btn btn-outline-primary btn-sm">Edit</a>
-
+                                 
+                              <!-- Button to trigger the floating modal -->
+                             <button type="button" class="btn btn-outline-primary btn-sm" onclick="openEditAdminModal({{ account.id }}, '{{ account.firstname }}', '{{ account.lastname }}', '{{ account.email }}')"> Edit</button>
                                     <!-- Delete Button -->
                                     <form action="{{ url_for('delete_admin', admin_id=account.id) }}" method="post" style="display:inline;">
                                          <button type="button" class="btn btn-outline-warning btn-sm"
@@ -103,6 +104,91 @@
       </div>
     </div>
   </section>
+
+
+<!-- Bootstrap Floating Modal -->
+<div class="modal fade" id="editAdminModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editAdminForm">
+                    <input type="hidden" id="adminId" name="admin_id">
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Retype Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                    </div>
+                    <button type="button" class="btn btn-success" onclick="submitEditAdmin()">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Open modal and populate fields
+function openEditAdminModal(id, firstname, lastname, email) {
+    document.getElementById("adminId").value = id;
+    document.getElementById("firstname").value = firstname;
+    document.getElementById("lastname").value = lastname;
+    document.getElementById("email").value = email;
+    document.getElementById("new_password").value = "";
+    document.getElementById("confirm_password").value = "";
+
+    var editModal = new bootstrap.Modal(document.getElementById("editAdminModal"));
+    editModal.show();
+}
+
+// Submit form using SweetAlert2
+function submitEditAdmin() {
+    let formData = new FormData(document.getElementById("editAdminForm"));
+
+    let newPassword = document.getElementById("new_password").value;
+    let confirmPassword = document.getElementById("confirm_password").value;
+
+    if (newPassword !== confirmPassword) {
+        Swal.fire("Error", "Passwords do not match!", "error");
+        return;
+    }
+
+    fetch("/edit_admin", {
+        method: "POST",
+        body: formData
+    }).then(response => response.json()).then(data => {
+        Swal.fire({
+            title: data.success ? "Success" : "Error",
+            text: data.message,
+            icon: data.success ? "success" : "error",
+            confirmButtonText: "OK"
+        }).then(() => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }).catch(error => {
+        Swal.fire("Error", "Something went wrong!", "error");
+    });
+}
+</script>
 
 </main><!-- End #main -->
 
