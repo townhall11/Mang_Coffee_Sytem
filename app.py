@@ -4,7 +4,7 @@ from db import check_admin_login, check_customer_login, create_admin, create_cus
 app = Flask(__name__)
 app.secret_key = "AB_Is_Officially_Out"
 
-# website
+# Home Route
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -76,9 +76,11 @@ def register_admin():
         password = request.form["password"]
         role = request.form["role"]
 
-        create_admin(firstname, lastname, email, password, role)
-        flash("Admin registered successfully!", "success")
-        return redirect(url_for("login_admin"))
+        message = create_admin(firstname, lastname, email, password, role)
+        flash(message, "success" if "successfully" in message else "danger")
+        
+        if "successfully" in message:
+            return redirect(url_for("login_admin"))
 
     return render_template("register_admin.html")
 
@@ -89,12 +91,14 @@ def register_customer():
         firstname = request.form["firstname"]
         lastname = request.form["lastname"]
         email = request.form["email"]
-        address = request.form["address"]
         password = request.form["password"]
+        address = request.form["address"]
       
-        create_customer(firstname, lastname, email, password, address)
-        flash("Customer registered successfully!", "success")
-        return redirect(url_for("login_customer"))
+        message = create_customer(firstname, lastname, email, password, address)
+        flash(message, "success" if "successfully" in message else "danger")
+        
+        if "successfully" in message:
+            return redirect(url_for("login_customer"))
 
     return render_template("register_customer.html")
 
