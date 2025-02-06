@@ -49,7 +49,7 @@ def login_customer():
 @app.route("/admin_dashboard")
 def admin_dashboard():
     if "admin_id" in session:
-        return f"Welcome, {session['admin_name']}! <a href='/logout'>Logout</a>"
+        return f"Welcome, {session['admin_name']}! <a href='/logout_admin'>Logout</a>"
     return redirect(url_for("login_admin"))
 
 # Customer Dashboard
@@ -59,12 +59,20 @@ def customer_dashboard():
         return f"Welcome, {session['customer_name']}! <a href='/logout'>Logout</a>"
     return redirect(url_for("login_customer"))
 
-# Logout
+# client Logout
 @app.route("/logout")
 def logout():
     session.clear()
     flash("Logged out successfully.", "info")
-    return redirect(url_for("home"))
+    return redirect(url_for("login_customer"))
+
+# admin Logout
+@app.route("/logout_admin")
+def logout_admin():
+    session.clear()
+    flash("Logged out successfully.", "info")
+    return redirect(url_for("login_admin"))
+
 
 # Register Admin
 @app.route("/register_admin", methods=["GET", "POST"])
