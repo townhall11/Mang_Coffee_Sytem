@@ -27,6 +27,7 @@ def login_admin():
 
     return render_template("login_admin.html")
 
+
 # Customer Login
 @app.route("/login_customer", methods=["GET", "POST"])
 def login_customer():
@@ -49,14 +50,14 @@ def login_customer():
 @app.route("/admin_dashboard")
 def admin_dashboard():
     if "admin_id" in session:
-        return f"Welcome, {session['admin_name']}! <a href='/logout_admin'>Logout</a>"
+        return render_template("dashboard_admin.html", admin_name=session["admin_name"])
     return redirect(url_for("login_admin"))
 
 # Customer Dashboard
 @app.route("/customer_dashboard")
 def customer_dashboard():
     if "customer_id" in session:
-        return f"Welcome, {session['customer_name']}! <a href='/logout'>Logout</a>"
+        return render_template("dashboard_customer.html", customer_name=session["customer_name"])
     return redirect(url_for("login_customer"))
 
 # client Logout

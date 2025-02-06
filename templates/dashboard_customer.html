@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body onload="welcomeCustomer()">
+
+    <h1>Welcome, {{ customer_name }}!</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <script>
+        function welcomeCustomer() {
+            Swal.fire({
+                title: "Welcome Customer!",
+                text: "You have successfully logged in.",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+    </script>
+
+</body>
+</html>

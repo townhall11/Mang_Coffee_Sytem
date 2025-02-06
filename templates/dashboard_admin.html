@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body onload="welcomeAdmin()">
+
+    <h1>Welcome, {{ admin_name }}!</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <script>
+        function welcomeAdmin() {
+            Swal.fire({
+                title: "Welcome Admin!",
+                text: "You have successfully logged in.",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+    </script>
+
+</body>
+</html>
