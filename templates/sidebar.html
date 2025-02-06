@@ -1,0 +1,76 @@
+<style>
+  .sidebar{
+    background: linear-gradient(0deg, rgba(237, 237, 237, 1) 0%, rgba(245, 245, 245, 1) 50%, rgba(255, 255, 255, 1) 100%);
+  }
+  #nav-hov {
+    background-color: transparent;
+  }
+  #nav-hov:hover {
+    background-color: white;
+  }
+</style>
+<!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " id="nav-hov" href="{{ url_for('home') }}">
+          <i class="bi bi-grid text-black fw-bold"></i>
+          <span class="text-black fw-bold">Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" id="nav-hov" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide text-black fw-bold"></i><span class="text-black fw-bold">Teachers</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+        </a>
+        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+     
+          <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">View All Records</span>
+            </a>
+          </li> 
+        </ul>
+      </li><!-- End Components Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text text-black fw-bold"></i><span class="text-black fw-bold">Students</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+       
+          <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">View All Records</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+    
+         <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#icons-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-person text-black fw-bold"></i><span class="text-black fw-bold">Manage Accounts</span><i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+        </a>
+        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+           <li>
+            <a href="" id="nav-hov">
+              <i class="bi bi-circle text-black fw-bold"></i><span class="text-black fw-bold">Teachers Approval</span>
+            </a>
+          </li>
+    
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" id="nav-hov" href="">
+          <i class="bi bi-archive text-black fw-bold"></i>
+          <span class="text-black fw-bold">Archived</span>
+        </a>
+      </li><!-- End Archived Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->

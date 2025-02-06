@@ -10,6 +10,7 @@ def home():
     return render_template("index.html")
 
 # Admin Login
+
 @app.route("/login_admin", methods=["GET", "POST"])
 def login_admin():
     if request.method == "POST":
@@ -20,6 +21,9 @@ def login_admin():
         if admin:
             session["admin_id"] = admin["id"]
             session["admin_name"] = admin["firstname"]
+            session["ad_lastname"] = admin["lastname"]
+          
+
             flash("Admin Login successful!", "success")
             return redirect(url_for("admin_dashboard"))
         else:
