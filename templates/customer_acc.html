@@ -89,10 +89,10 @@
                               <!-- Button to trigger the floating modal -->
                              <button type="button" class="btn btn-outline-primary btn-sm" onclick="openeditCustomerModal({{ account.id }}, '{{ account.firstname }}', '{{ account.lastname }}','{{ account.email }}','{{ account.mobilenumber }}', '{{ account.address }}')"> Edit</button>
                                     <!-- Delete Button -->
-                                    <form action="{{ url_for('delete_customer', customer_id=account.id) }}" method="post" style="display:inline;">
-                                         <button type="button" class="btn btn-outline-warning btn-sm"
-                                          onclick="confirmDelete('{{ account.id }}')">Delete</button>
-                                    </form>
+                                   <form id="deleteForm-{{ account.id }}" action="{{ url_for('delete_customer', customer_id=account.id) }}" method="post" style="display:inline;">
+                                       <button type="button" class="btn btn-outline-warning btn-sm" onclick="confirmDelete('{{ account.id }}')">Delete</button>
+                                   </form>
+
                                 </td>
                             </tr>
                             {% endfor %}
@@ -173,7 +173,6 @@ function openeditCustomerModal(id, firstname, lastname, email, mobilenumber, add
 // Submit form using SweetAlert2
 function submitEditCustomer() {
     let formData = new FormData(document.getElementById("editCustomerForm"));
-
     let newPassword = document.getElementById("new_password").value;
     let confirmPassword = document.getElementById("confirm_password").value;
 
@@ -200,7 +199,10 @@ function submitEditCustomer() {
         Swal.fire("Error", "Something went wrong!", "error");
     });
 }
+
+
 </script>
+
 
 </main><!-- End #main -->
 
@@ -216,35 +218,7 @@ function submitEditCustomer() {
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function confirmDelete(customerId) {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/delete_customer/${customerId}`, {
-                method: "POST"
-            }).then(response => {
-                if (response.ok) {
-                    Swal.fire(
-                        "Deleted!",
-                        "Customer account has been deleted.",
-                        "success"
-                    ).then(() => {
-                        window.location.reload();
-                    });
-                }
-            });
-        }
-    });
-}
-</script>
+
 <!-- Vendor JS Files -->
 <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -263,6 +237,49 @@ function confirmDelete(customerId) {
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Check if the delete action was triggered
+    if (sessionStorage.getItem("deleteSuccess")) {
+        let successMessage = "{{ get_flashed_messages(category_filter=['success'])[0] if get_flashed_messages(category_filter=['success']) else '' }}";
+        
+        if (successMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: successMessage,
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK"
+            });
+        }
+
+        // Remove the flag after showing the message
+        sessionStorage.removeItem("deleteSuccess");
+    }
+});
+
+// Confirm delete function using SweetAlert2
+function confirmDelete(customerId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Set a flag to indicate deletion was triggered
+            sessionStorage.setItem("deleteSuccess", "true");
+            document.getElementById("deleteForm-" + customerId).submit();
+        }
+    });
+}
+</script>
+
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       const queryParams = new URLSearchParams(window.location.search);

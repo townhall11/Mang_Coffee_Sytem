@@ -138,7 +138,7 @@ def admin_accounts():
     all_acc = cursor.fetchall()
     conn.close()
 
-    return render_template("admin_acc.html", all_acc=all_acc)
+    return render_template("admin_acc.html", all_acc=all_acc, admin_name=session["admin_name"])
 
 # Edit Admin Accounts
 @app.route("/edit_admin", methods=["POST"])
@@ -219,7 +219,7 @@ def customer_account():
     all_acc = cursor.fetchall()
     conn.close()
 
-    return render_template("customer_acc.html", all_acc=all_acc)
+    return render_template("customer_acc.html", all_acc=all_acc,admin_name=session["admin_name"])
 
 # Edit Customer Accounts
 @app.route("/edit_customer", methods=["POST"])
@@ -274,18 +274,24 @@ def edit_customer():
 
     return jsonify(response)
 
-
 # Delete Customer Accounts
 @app.route("/delete_customer/<int:customer_id>", methods=["POST"])
 def delete_customer(customer_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM customers WHERE id = %s", (customer_id,))
-    conn.commit()
-    conn.close()
+    try:
+        cursor.execute("DELETE FROM customers WHERE id = %s", (customer_id,))
+        conn.commit()
+        flash("Customer account deleted successfully!", "success")
+    except Exception as e:
+        flash(f"Error deleting customer: {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
 
-    flash("Customer account deleted successfully!", "success")
     return redirect(url_for("customer_account"))
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

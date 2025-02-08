@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 08, 2025 at 06:33 AM
+-- Generation Time: Feb 08, 2025 at 10:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,15 +33,28 @@ CREATE TABLE `admin` (
   `lastname` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(10) NOT NULL
+  `role` varchar(10) NOT NULL,
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`id`, `firstname`, `lastname`, `email`, `password`, `role`) VALUES
-(1, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$CY4JkWv357dV2X42$39aacd1815c13495c2142a8416fe69a80cfa05d0c5f7b5d682e3566da394b12f5490f57c836d5e4aa39acdd392617eb0c1139d0bf266ef6a5985823934c2094c', 'Admin');
+INSERT INTO `admin` (`id`, `firstname`, `lastname`, `email`, `password`, `role`, `created_at`) VALUES
+(0, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$v9iWsOFKugWOUKil$cc2d0a98ec3b72a60c4c8c71a7cd60c77480756e1d632884861f1e0957ebed91bfb3ca0e384704a20e39191599716f412296fbd35c04272746e808323a2375d8', 'Admin', '2025-02-08 09:39:57.709840');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category`
+--
+
+CREATE TABLE `category` (
+  `id` int(11) NOT NULL,
+  `categoryname` varchar(255) NOT NULL,
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -56,48 +69,52 @@ CREATE TABLE `customers` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `address` varchar(250) NOT NULL,
-  `mobilenumber` varchar(50) NOT NULL
+  `mobilenumber` varchar(50) NOT NULL,
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`id`, `firstname`, `lastname`, `email`, `password`, `address`, `mobilenumber`) VALUES
-(1, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$UX382zgnNNB4shyx$8eb10816df5ec55000ef6a8043d0ae641f6965c9c45783094c28080d01e0ac55bac191d3241f4c2035a59c03a7b20e9be8db75b96af14301a4ef6ee26fcd8a0d', 'Madridejos,Cebu', '09123456789');
+INSERT INTO `customers` (`id`, `firstname`, `lastname`, `email`, `password`, `address`, `mobilenumber`, `created_at`) VALUES
+(1, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$nFYiVCX67tbdtqIk$61f1248b9193ae85501bd1df62557b06721606518860feaa9c3dbf6efd324200950e33233e89bd43f96d088c186e6acdcf895a8a92b08e24597d6ca4ab706859', 'Bantayan Island,Cebu', '09123456799', '2025-02-08 09:36:16.875575');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+CREATE TABLE `products` (
+  `prod_id` varchar(200) NOT NULL,
+  `prod_code` varchar(200) NOT NULL,
+  `prod_name` varchar(200) NOT NULL,
+  `prod_img` varchar(200) NOT NULL,
+  `prod_desc` longtext NOT NULL,
+  `prod_price` varchar(200) NOT NULL,
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `customers`
 --
 ALTER TABLE `customers`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `admin`
---
-ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
