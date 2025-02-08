@@ -292,6 +292,99 @@ def delete_customer(customer_id):
     return redirect(url_for("customer_account"))
 
 
+# View All Categories
+@app.route("/view_category")
+def view_category():
+    if "admin_id" not in session:
+        flash("Please log in first!", "danger")
+        return redirect(url_for("login_admin"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM category")
+    all_acc = cursor.fetchall()
+    conn.close()
+
+    return render_template("category.html", all_acc=all_acc, admin_name=session["admin_name"])
+
+# Add Category
+@app.route("/add_category", methods=["POST"])
+def add_category():
+    category_name = request.form.get("categoryname", "").strip()
+
+    if not category_name:
+        return jsonify({"success": False, "message": "Category name cannot be empty!"})
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check if category already exists
+        cursor.execute("SELECT id FROM category WHERE categoryname = %s", (category_name,))
+        existing_category = cursor.fetchone()
+
+        if existing_category:
+            return jsonify({"success": False, "message": "Category already exists!"})
+
+        # Insert new category
+        cursor.execute("INSERT INTO category (categoryname) VALUES (%s)", (category_name,))
+        conn.commit()
+        new_category_id = cursor.lastrowid  # Get the inserted ID
+        
+        return jsonify({"success": True, "message": "Category added successfully!", "id": new_category_id})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Error: {str(e)}"})
+
+    finally:
+        cursor.close()
+        conn.close()
+        
+
+# Edit Category
+@app.route("/edit_category", methods=["POST"])
+def edit_category():
+    try:
+        category_id = request.form.get("category_id")
+        categoryname = request.form.get("categoryname")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("UPDATE category SET categoryname = %s WHERE id = %s", (categoryname, category_id))
+        conn.commit()
+
+        if cursor.rowcount > 0:
+            response = {"success": True, "message": "Category updated successfully!"}
+        else:
+            response = {"success": False, "message": "No changes made or invalid category ID."}
+
+    except Exception as e:
+        response = {"success": False, "message": str(e)}
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return jsonify(response)
+
+# Delete Category
+@app.route("/delete_category/<int:category_id>", methods=["POST"])
+def delete_category(category_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM category WHERE id = %s", (category_id,))
+        conn.commit()
+        flash("Category deleted successfully!", "success")
+    except Exception as e:
+        flash(f"Error deleting category: {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for("view_category"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

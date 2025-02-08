@@ -21,14 +21,25 @@
         </a>
       </li><!-- End Dashboard Nav -->
 
-     
       <li class="nav-item">
-        <a class="nav-link collapsed" id="nav-hov"data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide text-black fw-bold"></i>
-          <span class="text-black fw-bold">Manage Category</span>
-        </a>
+    <a class="nav-link collapsed" data-bs-target="#category-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-menu-button-wide text-black fw-bold"></i>
+        <span class="text-black fw-bold">Manage Category</span>
+        <i class="bi bi-chevron-down ms-auto text-black fw-bold"></i>
+    </a>
+    <ul id="category-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="{{ url_for('view_category') }}" id="nav-hov">
+                <i class="bi bi-circle text-black fw-bold"></i>
+                <span class="text-black fw-bold">View Categories</span>
+            </a>
+        </li>
+       
+    </ul>
+</li>
 
-      </li><!-- End Archived Nav -->
+  
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" id="nav-hov" data-bs-toggle="collapse" href="#">
