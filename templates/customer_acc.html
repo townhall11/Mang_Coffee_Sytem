@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Admin Dashboard-MANG JUAN COFFEE</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='image/logo_mangjuan.png') }}" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/quill/quill.snow.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/quill/quill.bubble.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- Include Navbar -->
+{% include 'navbar.html' %}
+
+<!-- Include Sidebar -->
+{% include 'sidebar.html' %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Customer Account</h5>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable" id="accountsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fullname</th>
+                  <th>Email</th>
+                  <th>Mobile #</th>
+                  <th>Address</th>
+                  <th>Action</th>
+               </tr>
+              </thead>
+              <tbody>
+                            {% for account in all_acc %}
+                            <tr>
+                                <td>{{ account.id }}</td>
+                                <td>{{ account.firstname }} {{ account.lastname }}</td>
+                                <td>{{ account.email }}</td>
+                                <td>{{ account.mobilenumber }}</td>
+                                <td>{{ account.address }}</td>
+                                <td>
+                                    <!-- Edit Button -->
+                                 
+                              <!-- Button to trigger the floating modal -->
+                             <button type="button" class="btn btn-outline-primary btn-sm" onclick="openeditCustomerModal({{ account.id }}, '{{ account.firstname }}', '{{ account.lastname }}','{{ account.email }}','{{ account.mobilenumber }}', '{{ account.address }}')"> Edit</button>
+                                    <!-- Delete Button -->
+                                    <form action="{{ url_for('delete_customer', customer_id=account.id) }}" method="post" style="display:inline;">
+                                         <button type="button" class="btn btn-outline-warning btn-sm"
+                                          onclick="confirmDelete('{{ account.id }}')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+<!-- Bootstrap Floating Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCustomerForm">
+                    <input type="hidden" id="customerId" name="customer_id">
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobilenumber" class="form-label">Mobilenumber</label>
+                        <input type="tel" class="form-control" id="mobilenumber" name="mobilenumber" requiredpattern="\d{11}" title="Mobile number must be exactly 11 digits">
+                    </div>
+                      <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Retype Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                    </div>
+                    <button type="button" class="btn btn-success" onclick="submitEditCustomer()">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Open modal and populate fields
+function openeditCustomerModal(id, firstname, lastname, email, mobilenumber, address) {
+    document.getElementById("customerId").value = id;
+    document.getElementById("firstname").value = firstname;
+    document.getElementById("lastname").value = lastname;
+    document.getElementById("email").value = email;
+    document.getElementById("mobilenumber").value = mobilenumber;
+    document.getElementById("address").value = address;
+    document.getElementById("new_password").value = "";
+    document.getElementById("confirm_password").value = "";
+
+    var editModal = new bootstrap.Modal(document.getElementById("editCustomerModal"));
+    editModal.show();
+}
+
+// Submit form using SweetAlert2
+function submitEditCustomer() {
+    let formData = new FormData(document.getElementById("editCustomerForm"));
+
+    let newPassword = document.getElementById("new_password").value;
+    let confirmPassword = document.getElementById("confirm_password").value;
+
+    if (newPassword !== confirmPassword) {
+        Swal.fire("Error", "Passwords do not match!", "error");
+        return;
+    }
+
+    fetch("/edit_customer", {
+        method: "POST",
+        body: formData
+    }).then(response => response.json()).then(data => {
+        Swal.fire({
+            title: data.success ? "Success" : "Error",
+            text: data.message,
+            icon: data.success ? "success" : "error",
+            confirmButtonText: "OK"
+        }).then(() => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }).catch(error => {
+        Swal.fire("Error", "Something went wrong!", "error");
+    });
+}
+</script>
+
+</main><!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+  <div class="copyright">
+    &copy; Copyright © 2025 <strong><span>Mang Juan Coffee System</span></strong>. All Rights Reserved
+  </div>
+  <div class="credits">
+     Designed by <a href="#">Joilingford && Macky</a>
+  </div>
+</footer><!-- End Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDelete(customerId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/delete_customer/${customerId}`, {
+                method: "POST"
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire(
+                        "Deleted!",
+                        "Customer account has been deleted.",
+                        "success"
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+    });
+}
+</script>
+<!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/echarts/echarts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/quill/quill.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+<!-- Include DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Include DataTables Responsive JS -->
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const queryParams = new URLSearchParams(window.location.search);
+      const alertType = queryParams.get('alertType');
+      const alertMessage = queryParams.get('alertMessage');
+
+      if (alertType && alertMessage) {
+          Swal.fire({
+              icon: alertType,
+              title: alertType.charAt(0).toUpperCase() + alertType.slice(1),
+              text: alertMessage
+          });
+      }
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('#accountsTable').DataTable({
+      responsive: true
+    });
+  });
+</script>
+
+</body>
+
+</html>

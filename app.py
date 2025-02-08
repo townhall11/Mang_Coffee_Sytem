@@ -114,8 +114,9 @@ def register_customer():
         email = request.form["email"]
         password = request.form["password"]
         address = request.form["address"]
-      
-        message = create_customer(firstname, lastname, email, password, address)
+        mobilenumber = request.form["mobilenumber"]
+
+        message = create_customer(firstname, lastname, email, password, address, mobilenumber)
         flash(message, "success" if "successfully" in message else "danger")
         
         if "successfully" in message:
@@ -203,6 +204,88 @@ def delete_admin(admin_id):
     flash("Admin account deleted successfully!", "success")
     return redirect(url_for("admin_accounts"))
 
+
+# View All Customer Accounts
+@app.route("/customer_account")
+def customer_account():
+    if "admin_id" not in session:
+        flash("Please log in first!", "danger")
+        return redirect(url_for("login_admin"))
+
+    # Fetch all customers accounts from the database
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM customers")
+    all_acc = cursor.fetchall()
+    conn.close()
+
+    return render_template("customer_acc.html", all_acc=all_acc)
+
+# Edit Customer Accounts
+@app.route("/edit_customer", methods=["POST"])
+def edit_customer():
+    try:
+        customer_id = request.form.get("customer_id")
+        firstname = request.form.get("firstname")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+        mobilenumber = request.form.get("mobilenumber")
+        address = request.form.get("address")
+        new_password = request.form.get("new_password")
+
+        # Debugging: Print received data
+        print(f"Customer ID: {customer_id}, Firstname: {firstname}, Lastname: {lastname}, Email: {email}, Mobilenumber: {mobilenumber}, Address: {address}, Password: {new_password}")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if new_password is provided
+        if new_password and new_password.strip():
+            hashed_password = generate_password_hash(new_password)
+            cursor.execute("""
+                UPDATE customers 
+                SET firstname = %s, lastname = %s, email = %s, mobilenumber = %s, address = %s, password = %s
+                WHERE id = %s
+            """, (firstname, lastname, email, mobilenumber, address, hashed_password, customer_id))
+        else:
+            cursor.execute("""
+                UPDATE customers 
+                SET firstname = %s, lastname = %s, email = %s 
+                WHERE id = %s
+            """, (firstname, lastname, email, customer_id))
+
+        conn.commit()
+
+        # Debugging: Check if update was successful
+        if cursor.rowcount > 0:
+            print("Update successful")
+            response = {"success": True, "message": "Customer details updated successfully!"}
+        else:
+            print("No rows affected")
+            response = {"success": False, "message": "No changes detected or incorrect Customer ID."}
+
+    except Exception as e:
+        print("Error:", e)
+        response = {"success": False, "message": str(e)}
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return jsonify(response)
+
+
+# Delete Customer Accounts
+@app.route("/delete_customer/<int:customer_id>", methods=["POST"])
+def delete_customer(customer_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM customers WHERE id = %s", (customer_id,))
+    conn.commit()
+    conn.close()
+
+    flash("Customer account deleted successfully!", "success")
+    return redirect(url_for("customer_account"))
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -57,7 +57,7 @@ def customer_exists(email):
     return result is not None
 
 # Register Customer
-def create_customer(firstname, lastname, email, password, address):
+def create_customer(firstname, lastname, email, password, address, mobilenumber):
     if customer_exists(email):
         return "Customer already registered."
 
@@ -65,8 +65,8 @@ def create_customer(firstname, lastname, email, password, address):
     cursor = conn.cursor()
     
     hashed_password = generate_password_hash(password)
-    query = "INSERT INTO customers (firstname, lastname, email, password, address) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(query, (firstname, lastname, email, hashed_password, address))
+    query = "INSERT INTO customers (firstname, lastname, email, password, address, mobilenumber) VALUES (%s, %s, %s, %s, %s,%s)"
+    cursor.execute(query, (firstname, lastname, email, hashed_password, address, mobilenumber))
     
     conn.commit()
     cursor.close()
