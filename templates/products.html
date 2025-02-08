@@ -76,9 +76,9 @@
                      <tr>
                          <th>#</th>
                          <th>Category</th>
-                         <th>Product Code</th>
                          <th>Name</th>
                          <th>Description</th>
+                         <th>Stock</th>
                          <th>Price</th>
                          <th>Image</th>
                          <th>Actions</th>
@@ -88,10 +88,10 @@
                      {% for product in products %}
                      <tr>
                   <td>{{ product.id }}</td>
-                  <td>{{ product.category }}</td>
-                  <td>{{ product.prod_code }}</td>
+                  <td>{{ product.category_name }}</td>
                   <td>{{ product.prod_name }}</td>
                   <td>{{ product.prod_desc }}</td>
+                  <td>{{ product.stock }}</td>
                   <td>{{ product.prod_price }}</td>
                   <td><img src="{{ url_for('static', filename='uploads/' + product.prod_img) }}" width="50"></td>
                   <td>
@@ -126,21 +126,16 @@
             </div>
             <div class="modal-body">
                 <form id="addProductForm">
-                   <div class="mb-3">
-                    <label class="form-label">Category</label>
-                       <select class="form-control" name="category" required>
-                            <option value="">Select Category</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}">{{ category.categoryname }}</option>
-        {% else %}
-            <option value="">No categories found</option>
-        {% endfor %}
-    </select>
-                   </div>
-                   
                     <div class="mb-3">
-                        <label class="form-label">Product Code</label>
-                        <input type="text" class="form-control" name="prod_code" required>
+                        <label class="form-label">Category</label>
+                        <select class="form-control" name="category" required>
+                            <option value="">Select Category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.categoryname }}</option>
+                            {% else %}
+                                <option value="">No categories found</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Product Name</label>
@@ -152,13 +147,18 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Price</label>
-                        <input type="text" class="form-control" name="prod_price" required>
+                        <input type="number" step="0.01" class="form-control" name="prod_price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stock</label>
+                        <input type="number" class="form-control" name="stock" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Image</label>
                         <input type="file" class="form-control" name="prod_img">
                     </div>
                     <button type="submit" class="btn btn-primary">Add Product</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </form>
             </div>
         </div>
@@ -168,27 +168,6 @@
 
 
 <!-- Edit Category Modal -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editCategoryForm">
-                    <input type="hidden" id="categoryId" name="category_id">
-                    <div class="mb-3">
-                        <label for="categoryname" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="categoryname" name="categoryname" required>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="submitEditCategory()">Save Changes</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 
@@ -239,11 +218,16 @@ document.getElementById("addProductForm").addEventListener("submit", function(ev
     })
     .then(response => response.json())
     .then(data => {
-        Swal.fire("Success!", data.message, "success").then(() => location.reload());
+        if (data.success) {
+            Swal.fire("Success!", data.message, "success").then(() => location.reload());
+        } else {
+            Swal.fire("Error!", data.message, "error");
+        }
     })
-    .catch(error => console.error(error));
+    .catch(error => console.error("Error:", error));
 });
-
+</script>
+<script>
 function deleteProduct(id) {
     Swal.fire({
         title: "Are you sure?",

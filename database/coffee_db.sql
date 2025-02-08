@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 08, 2025 at 11:48 AM
+-- Generation Time: Feb 08, 2025 at 01:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -63,7 +63,8 @@ CREATE TABLE `category` (
 INSERT INTO `category` (`id`, `categoryname`, `created_at`) VALUES
 (3, 'coffee', '2025-02-08 10:40:11.812265'),
 (4, 'softdrink', '2025-02-08 10:34:23.869478'),
-(5, 'desert', '2025-02-08 10:42:23.805760');
+(5, 'desert', '2025-02-08 10:42:23.805760'),
+(6, 'breakfast food', '2025-02-08 11:51:27.591720');
 
 -- --------------------------------------------------------
 
@@ -98,13 +99,20 @@ INSERT INTO `customers` (`id`, `firstname`, `lastname`, `email`, `password`, `ad
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `category` varchar(255) NOT NULL,
-  `prod_code` varchar(200) NOT NULL,
   `prod_name` varchar(200) NOT NULL,
   `prod_img` varchar(200) NOT NULL,
-  `prod_desc` longtext NOT NULL,
+  `prod_desc` varchar(500) NOT NULL,
   `prod_price` varchar(200) NOT NULL,
+  `stock` varchar(50) NOT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`id`, `category`, `prod_name`, `prod_img`, `prod_desc`, `prod_price`, `stock`, `created_at`) VALUES
+(2, '4', 'coke', 'Coding_101.png', 'litro', '50.0', '10', '2025-02-08 12:48:37.591381');
 
 --
 -- Indexes for dumped tables
@@ -148,7 +156,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `customers`
@@ -160,7 +168,7 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

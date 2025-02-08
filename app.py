@@ -3,12 +3,21 @@ from db import check_admin_login, check_customer_login, create_admin, create_cus
 from db import get_db_connection  # ✅ Import database connection from db.py
 from werkzeug.security import generate_password_hash
 from flask import request, jsonify
+from werkzeug.utils import secure_filename
 import pymysql  # Ensure you're using the right MySQL connector
-
+import os
 
 
 app = Flask(__name__)
+
+#secretkey
 app.secret_key = "AB_Is_Officially_Out"
+
+# Configure upload folder
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure directory exists
+
 
 # Home Route
 @app.route("/")
@@ -390,44 +399,66 @@ def products():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)  # Fetch results as dictionaries
 
-    cursor.execute("SELECT * FROM products")
+    # Fetch products along with category names
+    cursor.execute("""
+        SELECT products.id, products.prod_name, products.prod_desc, products.stock, 
+               products.prod_price, products.prod_img, category.categoryname AS category_name
+        FROM products
+        JOIN category ON products.category = category.id
+    """)
     products = cursor.fetchall()
 
-    cursor.execute("SELECT id, categoryname FROM category")
-    categories = cursor.fetchall()
-    
     conn.close()
     
-    # Debugging: Print categories in the terminal
-    print("Categories from DB:", categories)  
-
-    return render_template('products.html', products=products, categories=categories, admin_name=session["admin_name"])
+    return render_template('products.html', products=products, admin_name=session["admin_name"])
 
 # Add Product
 @app.route('/add_product', methods=['POST'])
 def add_product():
-    if request.method == 'POST':
-        category = request.form['category']
-        prod_code = request.form['prod_code']
-        prod_name = request.form['prod_name']
-        prod_desc = request.form['prod_desc']
-        prod_price = request.form['prod_price']
-        file = request.files['prod_img']
+    try:
+        category = request.form.get('category')
+        prod_name = request.form.get('prod_name')
+        prod_desc = request.form.get('prod_desc')
+        prod_price = request.form.get('prod_price')
+        stock = request.form.get('stock')
+        file = request.files.get('prod_img')
 
-        if file:
+        # Validate category
+        if not category or not category.isdigit():
+            return jsonify({'success': False, 'message': 'Invalid category selection'}), 400
+        category = int(category)
+
+        # Convert price and stock to correct types
+        try:
+            prod_price = float(prod_price)
+            stock = int(stock)
+        except ValueError:
+            return jsonify({'success': False, 'message': 'Invalid price or stock format'}), 400
+
+        # Handle file upload
+        if file and file.filename:
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
         else:
-            filename = ""
+            filename = "logo_mangjuan.png"
 
+        # Save product to database
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO products (category, prod_code, prod_name, prod_img, prod_desc, prod_price) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (category, prod_code, prod_name, filename, prod_desc, prod_price))
+        cursor.execute("""
+            INSERT INTO products (category, prod_name, prod_img, prod_desc, prod_price, stock) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (category, prod_name, filename, prod_desc, prod_price, stock))
         conn.commit()
         conn.close()
-        
+
         return jsonify({'success': True, 'message': 'Product added successfully!'})
+
+    except Exception as e:
+        print("Error:", str(e))
+        return jsonify({'success': False, 'message': 'Error adding product', 'error': str(e)}), 500
+
 
 # Edit Product
 @app.route('/edit_product/<int:id>', methods=['POST'])
