@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Admin Dashboard-MANG JUAN COFFEE</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='image/logo_mangjuan.png') }}" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/quill/quill.snow.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/quill/quill.bubble.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- Include Navbar -->
+{% include 'navbar.html' %}
+
+<!-- Include Sidebar -->
+{% include 'sidebar.html' %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <h5 class="card-title">Products</h5>
+            
+                    <div class="d-flex justify-content-start align-items-center mb-3">
+                        <!-- New Category Button (Left-aligned) -->
+                       <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                          <i class="bi bi-plus-circle"></i> New Product
+                      </button>
+                    </div>
+
+                    <!-- Table with stripped rows -->
+                <table class="table datatable" id="accountsTable">
+                 <thead>
+                     <tr>
+                         <th>#</th>
+                         <th>Category</th>
+                         <th>Product Code</th>
+                         <th>Name</th>
+                         <th>Description</th>
+                         <th>Price</th>
+                         <th>Image</th>
+                         <th>Actions</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     {% for product in products %}
+                     <tr>
+                  <td>{{ product.id }}</td>
+                  <td>{{ product.category }}</td>
+                  <td>{{ product.prod_code }}</td>
+                  <td>{{ product.prod_name }}</td>
+                  <td>{{ product.prod_desc }}</td>
+                  <td>{{ product.prod_price }}</td>
+                  <td><img src="{{ url_for('static', filename='uploads/' + product.prod_img) }}" width="50"></td>
+                  <td>
+                <button class="btn btn-primary btn-sm" onclick="editProduct({{ product.id }})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteProduct({{ product.id }})">Delete</button>
+                       </td>
+                   </tr>
+                   {% endfor %}
+               </tbody>
+           </table>
+
+                    <!-- End Table with stripped rows -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Bootstrap Floating Modal -->
+<!-- Add Product Button -->
+
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProductForm">
+                   <div class="mb-3">
+                    <label class="form-label">Category</label>
+                       <select class="form-control" name="category" required>
+                            <option value="">Select Category</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.categoryname }}</option>
+        {% else %}
+            <option value="">No categories found</option>
+        {% endfor %}
+    </select>
+                   </div>
+                   
+                    <div class="mb-3">
+                        <label class="form-label">Product Code</label>
+                        <input type="text" class="form-control" name="prod_code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" class="form-control" name="prod_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="prod_desc" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="text" class="form-control" name="prod_price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input type="file" class="form-control" name="prod_img">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCategoryForm">
+                    <input type="hidden" id="categoryId" name="category_id">
+                    <div class="mb-3">
+                        <label for="categoryname" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryname" name="categoryname" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="submitEditCategory()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</main><!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+  <div class="copyright">
+    &copy; Copyright © 2025 <strong><span>Mang Juan Coffee System</span></strong>. All Rights Reserved
+  </div>
+  <div class="credits">
+     Designed by <a href="#">Joilingford && Macky</a>
+  </div>
+</footer><!-- End Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/echarts/echarts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/quill/quill.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+<!-- Include DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Include DataTables Responsive JS -->
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<!-- SweetAlert2 JS -->
+
+<!-- SweetAlert2 & JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById("addProductForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    let formData = new FormData(this);
+
+    fetch("/add_product", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire("Success!", data.message, "success").then(() => location.reload());
+    })
+    .catch(error => console.error(error));
+});
+
+function deleteProduct(id) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/delete_product/${id}`, { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                Swal.fire("Deleted!", data.message, "success").then(() => location.reload());
+            });
+        }
+    });
+}
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const queryParams = new URLSearchParams(window.location.search);
+      const alertType = queryParams.get('alertType');
+      const alertMessage = queryParams.get('alertMessage');
+
+      if (alertType && alertMessage) {
+          Swal.fire({
+              icon: alertType,
+              title: alertType.charAt(0).toUpperCase() + alertType.slice(1),
+              text: alertMessage
+          });
+      }
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('#accountsTable').DataTable({
+      responsive: true
+    });
+  });
+</script>
+
+</body>
+
+</html>

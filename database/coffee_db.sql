@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 08, 2025 at 10:42 AM
+-- Generation Time: Feb 08, 2025 at 11:48 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `firstname`, `lastname`, `email`, `password`, `role`, `created_at`) VALUES
-(0, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$v9iWsOFKugWOUKil$cc2d0a98ec3b72a60c4c8c71a7cd60c77480756e1d632884861f1e0957ebed91bfb3ca0e384704a20e39191599716f412296fbd35c04272746e808323a2375d8', 'Admin', '2025-02-08 09:39:57.709840');
+(1, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$v9iWsOFKugWOUKil$cc2d0a98ec3b72a60c4c8c71a7cd60c77480756e1d632884861f1e0957ebed91bfb3ca0e384704a20e39191599716f412296fbd35c04272746e808323a2375d8', 'Admin', '2025-02-08 09:39:57.709840');
 
 -- --------------------------------------------------------
 
@@ -55,6 +55,15 @@ CREATE TABLE `category` (
   `categoryname` varchar(255) NOT NULL,
   `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`id`, `categoryname`, `created_at`) VALUES
+(3, 'coffee', '2025-02-08 10:40:11.812265'),
+(4, 'softdrink', '2025-02-08 10:34:23.869478'),
+(5, 'desert', '2025-02-08 10:42:23.805760');
 
 -- --------------------------------------------------------
 
@@ -87,7 +96,8 @@ INSERT INTO `customers` (`id`, `firstname`, `lastname`, `email`, `password`, `ad
 --
 
 CREATE TABLE `products` (
-  `prod_id` varchar(200) NOT NULL,
+  `id` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
   `prod_code` varchar(200) NOT NULL,
   `prod_name` varchar(200) NOT NULL,
   `prod_img` varchar(200) NOT NULL,
@@ -101,9 +111,27 @@ CREATE TABLE `products` (
 --
 
 --
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `category`
+--
+ALTER TABLE `category`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `customers`
 --
 ALTER TABLE `customers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -111,10 +139,28 @@ ALTER TABLE `customers`
 --
 
 --
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `category`
+--
+ALTER TABLE `category`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

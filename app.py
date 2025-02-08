@@ -339,7 +339,6 @@ def add_category():
     finally:
         cursor.close()
         conn.close()
-        
 
 # Edit Category
 @app.route("/edit_category", methods=["POST"])
@@ -385,6 +384,88 @@ def delete_category(category_id):
 
     return redirect(url_for("view_category"))
 
+# View all products
+@app.route('/products')
+def products():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)  # Fetch results as dictionaries
+
+    cursor.execute("SELECT * FROM products")
+    products = cursor.fetchall()
+
+    cursor.execute("SELECT id, categoryname FROM category")
+    categories = cursor.fetchall()
+    
+    conn.close()
+    
+    # Debugging: Print categories in the terminal
+    print("Categories from DB:", categories)  
+
+    return render_template('products.html', products=products, categories=categories, admin_name=session["admin_name"])
+
+# Add Product
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    if request.method == 'POST':
+        category = request.form['category']
+        prod_code = request.form['prod_code']
+        prod_name = request.form['prod_name']
+        prod_desc = request.form['prod_desc']
+        prod_price = request.form['prod_price']
+        file = request.files['prod_img']
+
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        else:
+            filename = ""
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO products (category, prod_code, prod_name, prod_img, prod_desc, prod_price) VALUES (%s, %s, %s, %s, %s, %s)",
+                       (category, prod_code, prod_name, filename, prod_desc, prod_price))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'success': True, 'message': 'Product added successfully!'})
+
+# Edit Product
+@app.route('/edit_product/<int:id>', methods=['POST'])
+def edit_product(id):
+    category = request.form['category']
+    prod_code = request.form['prod_code']
+    prod_name = request.form['prod_name']
+    prod_desc = request.form['prod_desc']
+    prod_price = request.form['prod_price']
+    file = request.files.get('prod_img')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        cursor.execute("UPDATE products SET category=%s, prod_code=%s, prod_name=%s, prod_img=%s, prod_desc=%s, prod_price=%s WHERE id=%s",
+                       (category, prod_code, prod_name, filename, prod_desc, prod_price, id))
+    else:
+        cursor.execute("UPDATE products SET category=%s, prod_code=%s, prod_name=%s, prod_desc=%s, prod_price=%s WHERE id=%s",
+                       (category, prod_code, prod_name, prod_desc, prod_price, id))
+
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True, 'message': 'Product updated successfully!'})
+
+# Delete Product
+@app.route('/delete_product/<int:id>', methods=['POST'])
+def delete_product(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM products WHERE id=%s", (id,))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True, 'message': 'Product deleted successfully!'})
 
 if __name__ == "__main__":
     app.run(debug=True)
