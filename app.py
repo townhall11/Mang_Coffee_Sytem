@@ -408,9 +408,13 @@ def products():
     """)
     products = cursor.fetchall()
 
+    # Fetch all categories
+    cursor.execute("SELECT id, categoryname FROM category")
+    categories = cursor.fetchall()
+   
     conn.close()
     
-    return render_template('products.html', products=products, admin_name=session["admin_name"])
+    return render_template('products.html', products=products,categories=categories, admin_name=session["admin_name"])
 
 # Add Product
 @app.route('/add_product', methods=['POST'])
@@ -461,31 +465,52 @@ def add_product():
 
 
 # Edit Product
-@app.route('/edit_product/<int:id>', methods=['POST'])
-def edit_product(id):
-    category = request.form['category']
-    prod_code = request.form['prod_code']
-    prod_name = request.form['prod_name']
-    prod_desc = request.form['prod_desc']
-    prod_price = request.form['prod_price']
-    file = request.files.get('prod_img')
+@app.route('/edit_product', methods=['POST'])
+def edit_product():
+    try:
+        product_id = request.form.get('product_id')
+        category = request.form.get('category')
+        prod_name = request.form.get('prod_name')
+        prod_desc = request.form.get('prod_desc')
+        prod_price = request.form.get('prod_price')
+        stock = request.form.get('stock')
+        file = request.files.get('prod_img')
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+        # Ensure category is an integer
+        if category is not None and category.isdigit():
+            category = int(category)
+        else:
+            return jsonify({'success': False, 'message': 'Invalid category selection'}), 400
 
-    if file:
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        cursor.execute("UPDATE products SET category=%s, prod_code=%s, prod_name=%s, prod_img=%s, prod_desc=%s, prod_price=%s WHERE id=%s",
-                       (category, prod_code, prod_name, filename, prod_desc, prod_price, id))
-    else:
-        cursor.execute("UPDATE products SET category=%s, prod_code=%s, prod_name=%s, prod_desc=%s, prod_price=%s WHERE id=%s",
-                       (category, prod_code, prod_name, prod_desc, prod_price, id))
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    conn.commit()
-    conn.close()
-    
-    return jsonify({'success': True, 'message': 'Product updated successfully!'})
+        # Check if new image was uploaded
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            cursor.execute("""
+                UPDATE products SET category=%s, prod_name=%s, prod_img=%s, prod_desc=%s, prod_price=%s, stock=%s
+                WHERE id=%s
+            """, (category, prod_name, filename, prod_desc, prod_price, stock, product_id))
+        else:
+            cursor.execute("""
+                UPDATE products SET category=%s, prod_name=%s, prod_desc=%s, prod_price=%s, stock=%s
+                WHERE id=%s
+            """, (category, prod_name, prod_desc, prod_price, stock, product_id))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True, 'message': 'Product updated successfully!'})
+
+    except Exception as e:
+        print("Error:", str(e))
+        return jsonify({'success': False, 'message': 'Error updating product', 'error': str(e)}), 500
+
+
 
 # Delete Product
 @app.route('/delete_product/<int:id>', methods=['POST'])

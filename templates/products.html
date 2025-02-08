@@ -95,7 +95,7 @@
                   <td>{{ product.prod_price }}</td>
                   <td><img src="{{ url_for('static', filename='uploads/' + product.prod_img) }}" width="50"></td>
                   <td>
-                <button class="btn btn-primary btn-sm" onclick="editProduct({{ product.id }})">Edit</button>
+               <button class="btn btn-primary btn-sm" onclick="editProduct({{ product.id }}, '{{ product.category }}', '{{ product.prod_name }}', '{{ product.prod_desc }}', '{{ product.stock }}', '{{ product.prod_price }}', '{{ product.prod_img }}')">Edit</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteProduct({{ product.id }})">Delete</button>
                        </td>
                    </tr>
@@ -110,10 +110,6 @@
         </div>
     </div>
 </section>
-
-
-<!-- Bootstrap Floating Modal -->
-<!-- Add Product Button -->
 
 
 <!-- Add Product Modal -->
@@ -167,9 +163,56 @@
 
 
 
-<!-- Edit Category Modal -->
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <input type="hidden" name="product_id" id="edit_product_id">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" name="category" id="edit_category" required>
+                            <option value="">Select Category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.categoryname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" class="form-control" name="prod_name" id="edit_prod_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="prod_desc" id="edit_prod_desc" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="text" class="form-control" name="prod_price" id="edit_prod_price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stock</label>
+                        <input type="text" class="form-control" name="stock" id="edit_stock" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input type="file" class="form-control" name="prod_img" id="edit_prod_img">
+                        <img id="current_product_image" src="" width="50" class="mt-2">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Product</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 </main><!-- End #main -->
@@ -226,6 +269,46 @@ document.getElementById("addProductForm").addEventListener("submit", function(ev
     })
     .catch(error => console.error("Error:", error));
 });
+</script>
+<script>
+function editProduct(id, category, name, desc, stock, price, image) {
+    document.getElementById("edit_product_id").value = id;
+    document.getElementById("edit_category").value = category;
+    document.getElementById("edit_prod_name").value = name;
+    document.getElementById("edit_prod_desc").value = desc;
+    document.getElementById("edit_stock").value = stock;
+    document.getElementById("edit_prod_price").value = price;
+    
+    let imgElement = document.getElementById("current_product_image");
+    if (image) {
+        imgElement.src = "/static/uploads/" + image;
+        imgElement.style.display = "block";
+    } else {
+        imgElement.style.display = "none";
+    }
+
+    new bootstrap.Modal(document.getElementById("editProductModal")).show();
+}
+
+// Handle Form Submission
+document.getElementById("editProductForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    let formData = new FormData(this);
+
+    fetch("/edit_product", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire("Updated!", data.message, "success").then(() => location.reload());
+    })
+    .catch(error => console.error(error));
+});
+
+
+
 </script>
 <script>
 function deleteProduct(id) {
