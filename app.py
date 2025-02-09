@@ -596,6 +596,26 @@ def get_products():
     conn.close()
     return jsonify(products)
 
+#Check Stock
+@app.route('/check_stock/<int:product_id>/<int:quantity>', methods=['GET'])
+def check_stock(product_id, quantity):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT stock FROM products WHERE id = %s", (product_id,))
+    product = cursor.fetchone()
+    conn.close()
+
+    if not product:
+        return jsonify({"success": False, "message": "Product not found"}), 404
+
+    if product['stock'] < quantity:
+        return jsonify({"success": False, "remaining": product['stock'], "message": "Not enough stock"}), 400
+
+    return jsonify({"success": True, "remaining": product['stock']})
+
+
+
+
 # Place an order
 @app.route('/place_order', methods=['POST'])
 def place_order():

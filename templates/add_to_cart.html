@@ -139,6 +139,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
+    let cart = []; // Moved outside to make it globally accessible
+
     // Fetch products
     function loadProducts() {
         $.ajax({
@@ -150,24 +152,29 @@ $(document).ready(function() {
                 products.forEach(product => {
                     productList.append(`
                         <div class="col-md-4">
-                            <div class="card product-card" onclick="addToCart(${product.id}, '${product.prod_name}', ${product.prod_price})">
-                                <img src="static/uploads/${product.prod_img}" class="card-img-top"width="50" alt="${product.prod_name}">
+                            <div class="card product-card">
+                                <img src="static/uploads/${product.prod_img}" class="card-img-top" width="50" alt="${product.prod_name}">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">${product.prod_name}</h6>
                                     <p class="card-text">₱${product.prod_price}</p>
+                                    <button class="btn btn-primary add-to-cart-btn" 
+                                        onclick="addToCart(${product.id}, '${product.prod_name}', ${product.prod_price})">
+                                        Add to Cart
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     `);
                 });
+            },
+            error: function() {
+                Swal.fire("Error", "Failed to load products. Try again.", "error");
             }
         });
     }
 
     loadProducts();
 
-    let cart = [];
-    
     function updateCart() {
         let cartItems = $("#cart-items");
         let total = 0;
@@ -187,7 +194,7 @@ $(document).ready(function() {
             });
         }
 
-        $("#cart-total").text(total);
+        $("#cart-total").text(`₱${total}`);
     }
 
     window.addToCart = function(id, name, price) {
@@ -198,11 +205,36 @@ $(document).ready(function() {
             showCancelButton: true,
             confirmButtonText: "Add",
         }).then((result) => {
-            if (result.isConfirmed) {
-                let quantity = result.value;
-                cart.push({ id, name, price, quantity });
-                updateCart();
+            if (!result.isConfirmed || !result.value) {
+                return; // Exit if canceled or no input
             }
+
+            let quantity = parseInt(result.value, 10);
+
+            if (isNaN(quantity) || quantity <= 0) {
+                Swal.fire("Error", "Please enter a valid quantity.", "error");
+                return;
+            }
+
+            // Check stock availability
+            $.ajax({
+                url: `/check_stock/${id}/${quantity}`,
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        cart.push({ id, name, price, quantity });
+                        updateCart();
+                        Swal.fire("Success", `${name} added to cart!`, "success");
+                    } else {
+                        Swal.fire("Error", `Only ${response.remaining || 0} left in stock!`, "error");
+                    }
+                },
+                error: function(xhr) {
+                    let errorMessage = xhr.responseJSON?.message || "Failed to check stock. Try again.";
+                    Swal.fire("Error", errorMessage, "error");
+                }
+            });
         });
     };
 
@@ -235,33 +267,27 @@ $(document).ready(function() {
                 if (!deliveryResult.isConfirmed) return;
                 let delivery = deliveryResult.value;
 
-                cart.forEach(item => {
-                    $.ajax({
-                        url: "/place_order",
-                        method: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify({
-                            product_id: item.id,
-                            quantity: item.quantity,
-                            payment: payment,
-                            delivery: delivery
-                        }),
-                        success: function(response) {
-                            Swal.fire("Success", response.message, "success");
-                            cart = [];
-                            updateCart();
-                            loadProducts();
-                        },
-                        error: function(error) {
-                            Swal.fire("Error", "Order failed", "error");
-                        }
-                    });
+                $.ajax({
+                    url: "/place_order",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ cart, payment, delivery }),
+                    success: function(response) {
+                        Swal.fire("Success", response.message, "success");
+                        cart = [];
+                        updateCart();
+                        loadProducts();
+                    },
+                    error: function(error) {
+                        Swal.fire("Error", "Order failed", "error");
+                    }
                 });
             });
         });
     };
 });
 </script>
+
 
 <!-- Vendor JS Files -->
 <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
