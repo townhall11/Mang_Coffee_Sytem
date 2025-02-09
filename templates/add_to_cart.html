@@ -96,7 +96,7 @@
                         <li class="list-group-item text-center">No items added</li>
                     </ul>
                     <hr>
-                    <h5 class="text-end">Total: ₱<span id="cart-total">0</span></h5>
+                    <h5 class="text-end">Total: <span id="cart-total">0</span></h5>
                     <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout</button>
                 </div>
             </div>
@@ -243,48 +243,60 @@ $(document).ready(function() {
         updateCart();
     };
 
-    window.checkout = function() {
-        if (cart.length === 0) {
-            Swal.fire("Error", "Your cart is empty", "error");
-            return;
-        }
+   window.checkout = function () {
+    if (cart.length === 0) {
+        Swal.fire("Error", "Your cart is empty", "error");
+        return;
+    }
+
+    Swal.fire({
+        title: "Select Payment Method",
+        input: "select",
+        inputOptions: { "Cash": "Cash", "ATM": "ATM" },
+        showCancelButton: true,
+    }).then((paymentResult) => {
+        if (!paymentResult.isConfirmed) return;
+        let payment = paymentResult.value;
 
         Swal.fire({
-            title: "Select Payment Method",
+            title: "Select Delivery Option",
             input: "select",
-            inputOptions: { "Cash": "Cash", "ATM": "ATM" },
+            inputOptions: {
+                "Takeout": "Takeout",
+                "Walkin": "Walkin",
+                "Dinein": "Dine-in",
+                "Delivery": "Delivery"
+            },
             showCancelButton: true,
-        }).then((paymentResult) => {
-            if (!paymentResult.isConfirmed) return;
-            let payment = paymentResult.value;
+        }).then((deliveryResult) => {
+            if (!deliveryResult.isConfirmed) return;
+            let delivery = deliveryResult.value;
 
-            Swal.fire({
-                title: "Select Delivery Option",
-                input: "select",
-                inputOptions: { "Takeout": "Takeout", "Walkin": "Walkin", "Dinein": "Dine-in", "Delivery": "Delivery" },
-                showCancelButton: true,
-            }).then((deliveryResult) => {
-                if (!deliveryResult.isConfirmed) return;
-                let delivery = deliveryResult.value;
+            // Ensure cart items contain necessary properties
+            let orderData = cart.map(item => ({
+                product_id: item.id,  // Make sure your cart items have an `id`
+                quantity: parseInt(item.quantity, 10)
+            }));
 
-                $.ajax({
-                    url: "/place_order",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({ cart, payment, delivery }),
-                    success: function(response) {
-                        Swal.fire("Success", response.message, "success");
-                        cart = [];
-                        updateCart();
-                        loadProducts();
-                    },
-                    error: function(error) {
-                        Swal.fire("Error", "Order failed", "error");
-                    }
-                });
+            $.ajax({
+                url: "/place_order",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ orders: orderData, payment, delivery }),
+                success: function (response) {
+                    Swal.fire("Success", response.message, "success");
+                    cart = [];
+                    updateCart();
+                    loadProducts();
+                },
+                error: function (error) {
+                    Swal.fire("Error", "Order failed", "error");
+                }
             });
         });
-    };
+    });
+};
+
 });
 </script>
 
