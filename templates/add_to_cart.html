@@ -73,7 +73,8 @@
                         {% for product in order_products %}
                         <div class="col-md-4">
                             <div class="card product-card" onclick="addToCart('{{ product.prod_name }}', {{ product.prod_price }})">
-                                <img src="{{ url_for('static', filename='uploads/' ~ product.prod_img) }}" class="card-img-top" alt="{{ product.prod_name }}">
+                                <img src="{{ url_for('static', filename='uploads/' ~ product.prod_img) }}?v={{ product.id }}" class="card-img-top" width="50" alt="{{ product.prod_name }}">
+
                                 <div class="card-body text-center">
                                     <h6 class="card-title">{{ product.prod_name }}</h6>
                                     <p class="card-text">₱{{ product.prod_price }}</p>
@@ -150,7 +151,7 @@ $(document).ready(function() {
                     productList.append(`
                         <div class="col-md-4">
                             <div class="card product-card" onclick="addToCart(${product.id}, '${product.prod_name}', ${product.prod_price})">
-                                <img src="static/image/${product.prod_img}" class="card-img-top" alt="${product.prod_name}">
+                                <img src="static/uploads/${product.prod_img}" class="card-img-top"width="50" alt="${product.prod_name}">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">${product.prod_name}</h6>
                                     <p class="card-text">₱${product.prod_price}</p>

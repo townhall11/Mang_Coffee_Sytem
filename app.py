@@ -585,6 +585,7 @@ def ManageOrder():
 
 
 
+
 # Fetch products from the database
 @app.route('/get_products', methods=['GET'])
 def get_products():
