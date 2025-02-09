@@ -638,9 +638,13 @@ def get_customers():
 @app.route('/place_order', methods=['POST'])
 def place_order():
     data = request.json
-    orders = data.get('orders', [])  # Receive multiple items
+    customer_id = data.get('customer_id')  # Get customer_id
+    orders = data.get('orders', [])
     payment_method = data.get('payment')
     delivery_option = data.get('delivery')
+
+    if not customer_id:
+        return jsonify({"success": False, "message": "Customer selection is required."}), 400
 
     if not orders:
         return jsonify({"success": False, "message": "No items in cart"}), 400
@@ -652,7 +656,6 @@ def place_order():
         product_id = order.get('product_id')
         quantity = int(order.get('quantity', 0))
 
-        # Fetch product stock and price
         cursor.execute("SELECT stock, prod_price FROM products WHERE id = %s", (product_id,))
         product = cursor.fetchone()
 
@@ -661,13 +664,11 @@ def place_order():
 
         total_price = float(product['prod_price']) * quantity
 
-        # Insert order into database
         cursor.execute("""
-            INSERT INTO orders (product_id, quantity, total_price, payments, delivery)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (product_id, quantity, total_price, payment_method, delivery_option))
+            INSERT INTO orders (customer_id, product_id, quantity, total_price, payments, delivery)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (customer_id, product_id, quantity, total_price, payment_method, delivery_option))
 
-        # Update stock
         new_stock = int(product['stock']) - quantity
         cursor.execute("UPDATE products SET stock = %s WHERE id = %s", (new_stock, product_id))
 
@@ -675,6 +676,7 @@ def place_order():
     conn.close()
 
     return jsonify({"success": True, "message": "Order placed successfully!"})
+
 
 
 

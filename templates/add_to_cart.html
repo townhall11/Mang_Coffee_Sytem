@@ -303,7 +303,12 @@ $(document).ready(function() {
         Swal.fire("Error", "Your cart is empty", "error");
         return;
     }
-    
+    let customerId = $("#customer-select").val();
+        if (!customerId) {
+            Swal.fire("Error", "Please select a customer before checking out.", "error");
+            return;
+        }
+        
     Swal.fire({
         title: "Select Payment Method",
         input: "select",
@@ -337,7 +342,7 @@ $(document).ready(function() {
                 url: "/place_order",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ orders: orderData, payment, delivery }),
+                data: JSON.stringify({customer_id: customerId, orders: orderData, payment, delivery }),
                 success: function (response) {
                     Swal.fire("Success", response.message, "success");
                     cart = [];
