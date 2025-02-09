@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2025 at 02:11 PM
+-- Generation Time: Feb 09, 2025 at 02:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,7 +91,7 @@ CREATE TABLE `customers` (
 
 INSERT INTO `customers` (`id`, `firstname`, `lastname`, `email`, `password`, `address`, `mobilenumber`, `created_at`) VALUES
 (1, 'joiling', 'ford', 'joilingford@gmail.com', 'scrypt:32768:8:1$nFYiVCX67tbdtqIk$61f1248b9193ae85501bd1df62557b06721606518860feaa9c3dbf6efd324200950e33233e89bd43f96d088c186e6acdcf895a8a92b08e24597d6ca4ab706859', 'Bantayan Island,Cebu', '09123456799', '2025-02-08 09:36:16.875575'),
-(3, 'client1', 'ford32', 'alexes@gmail.com', 'scrypt:32768:8:1$HJIzkQcIybM1O8ou$f85fd6c1093f21cc288c1deadcb5cb1a5652ef6e53a03a1103f08eb4e84b7641586cc1067681c43906dec42c42acaeb96fe9fe307c406f64b5c3ffa183c7a480', 'Madridejos,Cebu', '09123456799', '2025-02-09 12:40:34.166043');
+(3, 'Walk In', 'Customer', 'alexes@gmail.com', 'scrypt:32768:8:1$w9CYYUEKxDqSi2Fx$aa009125eee37b30e36ca2190b2e6f558ffff60029b24492c5a922fea3ba2fd031c461e743d00b53e51c71130fb0797b2ea35636c093556911b4b782b9969693', 'Madridejos,Cebu', '09123456799', '2025-02-09 13:28:01.437696');
 
 -- --------------------------------------------------------
 
@@ -110,6 +110,13 @@ CREATE TABLE `orders` (
   `delivery` enum('Takeout','Dinein','Delivery') DEFAULT 'Dinein',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `customer_id`, `product_id`, `quantity`, `total_price`, `status`, `payments`, `delivery`, `created_at`) VALUES
+(1, 1, 8, 1, 200.00, 'Pending', 'Cash', 'Takeout', '2025-02-09 13:29:18');
 
 -- --------------------------------------------------------
 
@@ -133,10 +140,10 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `category`, `prod_name`, `prod_img`, `prod_desc`, `prod_price`, `stock`, `created_at`) VALUES
-(7, '5', 'Philly', 'cheesestk.jpg', 'Cheesesteak', '200.0', 4, '2025-02-09 12:53:39.751178'),
-(8, '5', 'Spaghetti ', 'spaghetti_bolognese.jpg', 'Bolognese', '200.0', 2, '2025-02-09 12:03:03.159759'),
-(9, '6', 'Sandwich', 'reubensandwich.jpg', 'Reuben', '50.0', 2, '2025-02-09 12:03:09.775755'),
-(10, '6', 'Sandwich', 'submarine_sndwh.jpg', 'Submarine ', '60.0', 20, '2025-02-09 09:31:30.272473'),
+(7, '5', 'Philly', 'cheesestk.jpg', 'Cheesesteak', '200.0', 3, '2025-02-09 13:27:28.635788'),
+(8, '5', 'Spaghetti ', 'spaghetti_bolognese.jpg', 'Bolognese', '200.0', 2, '2025-02-09 13:29:18.266642'),
+(9, '6', 'Sandwich', 'reubensandwich.jpg', 'Reuben', '50.0', 1, '2025-02-09 13:24:34.794978'),
+(10, '6', 'Sandwich', 'submarine_sndwh.jpg', 'Submarine ', '60.0', 19, '2025-02-09 13:26:57.403332'),
 (11, '5', 'Burger', 'cheeseburgers.jpg', 'Cheese', '30.0', 10, '2025-02-09 09:42:22.747502'),
 (12, '7', 'Jambalaya', 'Jambalaya.jpg', 'Special', '60.0', 10, '2025-02-09 09:47:35.687720'),
 (13, '7', 'Buffalo Wings', 'buffalo_wings.jpg', 'Special', '320.0', 10, '2025-02-09 09:48:17.129157'),
@@ -221,7 +228,7 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `products`
