@@ -95,7 +95,8 @@
                   <td>{{ product.prod_price }}</td>
                   <td><img src="{{ url_for('static', filename='uploads/' + product.prod_img) }}" width="50"></td>
                   <td>
-               <button class="btn btn-primary btn-sm" onclick="editProduct({{ product.id }}, '{{ product.category }}', '{{ product.prod_name }}', '{{ product.prod_desc }}', '{{ product.stock }}', '{{ product.prod_price }}', '{{ product.prod_img }}')">Edit</button>
+                <button class="btn btn-success btn-sm" onclick="showAddStockModal('{{ product.id }}', '{{ product.stock }}')">Add Stock</button>
+                 <button class="btn btn-primary btn-sm" onclick="editProduct({{ product.id }}, '{{ product.category }}', '{{ product.prod_name }}', '{{ product.prod_desc }}', '{{ product.stock }}', '{{ product.prod_price }}', '{{ product.prod_img }}')">Edit</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteProduct({{ product.id }})">Delete</button>
                        </td>
                    </tr>
@@ -110,6 +111,119 @@
         </div>
     </div>
 </section>
+
+
+
+<!-- Add Stock Modal -->
+<div class="modal fade" id="addStockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Stock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStockForm">
+                    <input type="hidden" id="stock_product_id">
+                    <div class="mb-3">
+                        <label class="form-label">New Stock Quantity</label>
+                        <input type="number" id="new_stock" class="form-control" required min="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Stock</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function showAddStockModal(productId, stock) {
+    document.getElementById("stock_product_id").value = productId;
+    document.getElementById("new_stock").value = ""; // Reset input field
+
+    // Open Bootstrap modal correctly
+    var modal = new bootstrap.Modal(document.getElementById("addStockModal"));
+    modal.show();
+}
+
+document.getElementById("addStockForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let productId = document.getElementById("stock_product_id").value;
+    let newStock = document.getElementById("new_stock").value;
+
+    if (!productId || newStock === "" || isNaN(newStock) || newStock < 1) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Stock',
+            text: 'Stock quantity must be at least 1!',
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Confirm Stock Update',
+        text: `Are you sure you want to add ${newStock} stock to Product ID: ${productId}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Update it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("/update_stock", {
+                method: "POST",
+                body: JSON.stringify({ product_id: productId, new_stock: newStock }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("DEBUG - Server Response:", data); // Debugging JSON output
+
+                if (data.success) {
+                    // ✅ Update stock display in real-time if element exists
+                    let stockElement = document.getElementById(`stock-${productId}`);
+                    if (stockElement) {
+                        stockElement.innerText = data.updated_stock;
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Stock Updated!',
+                        text: 'Stock has been successfully updated.',
+                        timer: 2000,
+                        showConfirmButton: true
+                    }).then(() => {
+                        // ✅ Move redirect inside the correct block
+                        window.location.href = "/products";
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: data.message || "Something went wrong!",
+                    });
+                    console.error("Server Response:", data);
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong while updating stock.',
+                });
+                console.error("Fetch Error:", error);
+            });
+        }
+    });
+});
+</script>
+
+
 
 
 <!-- Add Product Modal -->
@@ -199,7 +313,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Stock</label>
-                        <input type="text" class="form-control" name="stock" id="edit_stock" required>
+                        <input type="text" class="form-control" name="stock" id="edit_stock" required readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Image</label>
@@ -250,6 +364,7 @@
 
 <!-- SweetAlert2 & JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 document.getElementById("addProductForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -351,6 +466,7 @@ function deleteProduct(id) {
       responsive: true
     });
   });
+
 </script>
 
 </body>

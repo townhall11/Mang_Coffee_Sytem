@@ -523,5 +523,54 @@ def delete_product(id):
     
     return jsonify({'success': True, 'message': 'Product deleted successfully!'})
 
+
+#Add Stock Product
+@app.route('/update_stock', methods=['POST'])
+def update_stock():
+    try:
+        data = request.json
+        product_id = data.get("product_id")
+        new_stock = data.get("new_stock")
+
+        if not product_id or not new_stock:
+            return jsonify({"success": False, "message": "Invalid product ID or stock value"}), 400
+
+        try:
+            new_stock = int(new_stock)
+            if new_stock < 1:
+                return jsonify({"success": False, "message": "Stock must be at least 1"}), 400
+        except ValueError:
+            return jsonify({"success": False, "message": "Invalid stock value"}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if product exists
+        cursor.execute("SELECT stock FROM products WHERE id = %s", (product_id,))
+        result = cursor.fetchone()
+
+        if not result:
+            return jsonify({"success": False, "message": "Product not found"}), 404
+
+        # Update stock
+        cursor.execute("UPDATE products SET stock = stock + %s WHERE id = %s", (new_stock, product_id))
+        conn.commit()
+
+        # Get updated stock value
+        cursor.execute("SELECT stock FROM products WHERE id = %s", (product_id,))
+        updated_stock = cursor.fetchone()[0]
+
+        conn.close()
+
+        return jsonify({"success": True, "updated_stock": updated_stock})
+
+    except Exception as e:
+        print("Error:", str(e))  # Log the error to console
+        return jsonify({"success": False, "message": "Something went wrong while updating stock.", "error": str(e)}), 500
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
