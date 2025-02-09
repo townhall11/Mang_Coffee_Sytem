@@ -569,6 +569,8 @@ def update_stock():
         return jsonify({"success": False, "message": "Something went wrong while updating stock.", "error": str(e)}), 500
 
 
+#Add To Cart
+
 
 
 
