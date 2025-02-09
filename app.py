@@ -569,10 +569,68 @@ def update_stock():
         return jsonify({"success": False, "message": "Something went wrong while updating stock.", "error": str(e)}), 500
 
 
-#Add To Cart
+# View All Manage Order
+@app.route('/ManageOrder')
+def ManageOrder():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)  # Use dictionary cursor
+
+    cursor.execute("SELECT * FROM products")  # Fetch all products
+    order_products = cursor.fetchall()  # Use a different variable name
+
+    cursor.close()
+    conn.close()
+
+    return render_template("add_to_cart.html", order_products=order_products, admin_name=session.get("admin_name", "Admin"))
 
 
 
+# Fetch products from the database
+@app.route('/get_products', methods=['GET'])
+def get_products():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM products WHERE stock > 0")
+    products = cursor.fetchall()
+    conn.close()
+    return jsonify(products)
 
-if __name__ == "__main__":
+# Place an order
+@app.route('/place_order', methods=['POST'])
+def place_order():
+    data = request.json
+    product_id = data.get('product_id')
+    quantity = int(data.get('quantity'))
+    payment_method = data.get('payment')
+    delivery_option = data.get('delivery')
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Check product availability
+    cursor.execute("SELECT stock, prod_price FROM products WHERE id = %s", (product_id,))
+    product = cursor.fetchone()
+
+    if not product or product['stock'] < quantity:
+        return jsonify({"success": False, "message": "Not enough stock"}), 400
+
+    total_price = product['prod_price'] * quantity
+
+    # Insert order into database
+    cursor.execute("""
+        INSERT INTO orders (product_id, quantity, total_price, payments, delivery)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (product_id, quantity, total_price, payment_method, delivery_option))
+
+    # Update stock
+    new_stock = product['stock'] - quantity
+    cursor.execute("UPDATE products SET stock = %s WHERE id = %s", (new_stock, product_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True, "message": "Order placed successfully!"})
+
+
+if __name__ == '__main__':
     app.run(debug=True)

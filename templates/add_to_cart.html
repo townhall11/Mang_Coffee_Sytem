@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Admin Manage Order -MANG JUAN COFFEE</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='image/logo_mangjuan.png') }}" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/quill/quill.snow.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/quill/quill.bubble.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+
+</head>
+
+<body>
+
+<!-- Include Navbar -->
+{% include 'navbar.html' %}
+
+<!-- Include Sidebar -->
+{% include 'sidebar.html' %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <h5 class="card-title">Manage Order</h5>
+              <section class="section">
+    <div class="row">
+        <!-- Product Selection Panel -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Select Products</h5>
+                    <div class="row" id="product-list">
+                        {% for product in order_products %}
+                        <div class="col-md-4">
+                            <div class="card product-card" onclick="addToCart('{{ product.prod_name }}', {{ product.prod_price }})">
+                                <img src="{{ url_for('static', filename='uploads/' ~ product.prod_img) }}" class="card-img-top" alt="{{ product.prod_name }}">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">{{ product.prod_name }}</h6>
+                                    <p class="card-text">₱{{ product.prod_price }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Section -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cart</h5>
+                    <ul class="list-group" id="cart-items">
+                        <li class="list-group-item text-center">No items added</li>
+                    </ul>
+                    <hr>
+                    <h5 class="text-end">Total: ₱<span id="cart-total">0</span></h5>
+                    <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+                
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+</main><!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+  <div class="copyright">
+    &copy; Copyright © 2025 <strong><span>Mang Juan Coffee System</span></strong>. All Rights Reserved
+  </div>
+  <div class="credits">
+     Designed by <a href="#">Joilingford && Macky</a>
+  </div>
+</footer><!-- End Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    // Fetch products
+    function loadProducts() {
+        $.ajax({
+            url: "/get_products",
+            method: "GET",
+            success: function(products) {
+                let productList = $("#product-list");
+                productList.empty();
+                products.forEach(product => {
+                    productList.append(`
+                        <div class="col-md-4">
+                            <div class="card product-card" onclick="addToCart(${product.id}, '${product.prod_name}', ${product.prod_price})">
+                                <img src="static/image/${product.prod_img}" class="card-img-top" alt="${product.prod_name}">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">${product.prod_name}</h6>
+                                    <p class="card-text">₱${product.prod_price}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+        });
+    }
+
+    loadProducts();
+
+    let cart = [];
+    
+    function updateCart() {
+        let cartItems = $("#cart-items");
+        let total = 0;
+        cartItems.empty();
+
+        if (cart.length === 0) {
+            cartItems.append(`<li class="list-group-item text-center">No items added</li>`);
+        } else {
+            cart.forEach((item, index) => {
+                total += item.price * item.quantity;
+                cartItems.append(`
+                    <li class="list-group-item d-flex justify-content-between">
+                        ${item.name} x${item.quantity} - ₱${item.price * item.quantity}
+                        <button class="btn btn-danger btn-sm" onclick="removeFromCart(${index})">X</button>
+                    </li>
+                `);
+            });
+        }
+
+        $("#cart-total").text(total);
+    }
+
+    window.addToCart = function(id, name, price) {
+        Swal.fire({
+            title: `Add ${name} to Cart?`,
+            input: "number",
+            inputAttributes: { min: 1 },
+            showCancelButton: true,
+            confirmButtonText: "Add",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let quantity = result.value;
+                cart.push({ id, name, price, quantity });
+                updateCart();
+            }
+        });
+    };
+
+    window.removeFromCart = function(index) {
+        cart.splice(index, 1);
+        updateCart();
+    };
+
+    window.checkout = function() {
+        if (cart.length === 0) {
+            Swal.fire("Error", "Your cart is empty", "error");
+            return;
+        }
+
+        Swal.fire({
+            title: "Select Payment Method",
+            input: "select",
+            inputOptions: { "Cash": "Cash", "ATM": "ATM" },
+            showCancelButton: true,
+        }).then((paymentResult) => {
+            if (!paymentResult.isConfirmed) return;
+            let payment = paymentResult.value;
+
+            Swal.fire({
+                title: "Select Delivery Option",
+                input: "select",
+                inputOptions: { "Takeout": "Takeout", "Walkin": "Walkin", "Dinein": "Dine-in", "Delivery": "Delivery" },
+                showCancelButton: true,
+            }).then((deliveryResult) => {
+                if (!deliveryResult.isConfirmed) return;
+                let delivery = deliveryResult.value;
+
+                cart.forEach(item => {
+                    $.ajax({
+                        url: "/place_order",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            product_id: item.id,
+                            quantity: item.quantity,
+                            payment: payment,
+                            delivery: delivery
+                        }),
+                        success: function(response) {
+                            Swal.fire("Success", response.message, "success");
+                            cart = [];
+                            updateCart();
+                            loadProducts();
+                        },
+                        error: function(error) {
+                            Swal.fire("Error", "Order failed", "error");
+                        }
+                    });
+                });
+            });
+        });
+    };
+});
+</script>
+
+<!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/echarts/echarts.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/quill/quill.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+<!-- Include DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Include DataTables Responsive JS -->
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<!-- SweetAlert2 JS -->
+
+
+
+</body>
+
+</html>
