@@ -614,6 +614,24 @@ def check_stock(product_id, quantity):
     return jsonify({"success": True, "remaining": product['stock']})
 
 
+#Show Customer
+@app.route("/get_customers")
+def get_customers():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)  # ✅ Ensure dictionary format
+
+        cursor.execute("SELECT id, firstname, lastname FROM customers")  # ✅ Fetch only needed columns
+        customers = cursor.fetchall()
+        conn.close()
+
+        print("Customers data:", customers)  # ✅ Debugging: Check what is being returned
+        return jsonify(customers)
+
+    except Exception as e:
+        print("Database error:", str(e))  
+        return jsonify({"error": "Database error"}), 500
+
 
 
 # Place an order

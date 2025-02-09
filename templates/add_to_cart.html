@@ -65,42 +65,54 @@
               <section class="section">
     <div class="row">
         <!-- Product Selection Panel -->
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Select Products</h5>
-                    <div class="row" id="product-list">
-                        {% for product in order_products %}
-                        <div class="col-md-4">
-                            <div class="card product-card" onclick="addToCart('{{ product.prod_name }}', {{ product.prod_price }})">
-                                <img src="{{ url_for('static', filename='uploads/' ~ product.prod_img) }}?v={{ product.id }}" class="card-img-top" width="50" alt="{{ product.prod_name }}">
+      <div class="col-lg-8">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Select Products</h5>
 
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">{{ product.prod_name }}</h6>
-                                    <p class="card-text">₱{{ product.prod_price }}</p>
-                                </div>
-                            </div>
+            <!-- Search Bar -->
+            <input type="text" id="product-search" class="form-control mb-3" placeholder="Search products...">
+
+            <div class="row" id="product-list">
+                {% for product in order_products %}
+                <div class="col-md-4 product-item">
+                    <div class="card product-card" onclick="addToCart('{{ product.prod_name }}', {{ product.prod_price }})">
+                        <img src="{{ url_for('static', filename='uploads/' ~ product.prod_img) }}?v={{ product.id }}" class="card-img-top" width="50" alt="{{ product.prod_name }}">
+
+                        <div class="card-body text-center">
+                            <h6 class="card-title product-name">{{ product.prod_name }}</h6>
+                             <p class="card-text">{{ product.prod_name }}</p>
+                            <p class="card-text">₱{{ product.prod_desc }}</p>
                         </div>
-                        {% endfor %}
                     </div>
-                </div>
-            </div>
-        </div>
+                  </div>
+                 {% endfor %}
+               </div>
+             </div>
+          </div>
+      </div>
 
         <!-- Cart Section -->
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Cart</h5>
-                    <ul class="list-group" id="cart-items">
-                        <li class="list-group-item text-center">No items added</li>
-                    </ul>
-                    <hr>
-                    <h5 class="text-end">Total: <span id="cart-total">0</span></h5>
-                    <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout</button>
-                </div>
-            </div>
+        <!-- Customer Selection Panel -->
+<div class="col-lg-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Select Customer</h5>
+            <select id="customer-select" class="form-control mb-3">
+                <option value="">-- Select a Customer --</option>
+            </select>
+
+            <h5 class="card-title">Cart</h5>
+            <ul class="list-group" id="cart-items">
+                <li class="list-group-item text-center">No items added</li>
+            </ul>
+            <hr>
+            <h5 class="text-end">Total: <span id="cart-total">0</span></h5>
+            <button class="btn btn-success w-100 mt-3" onclick="checkout()">Checkout</button>
         </div>
+    </div>
+</div>
+
     </div>
 </section>
 
@@ -136,6 +148,48 @@
 </footer><!-- End Footer -->
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function loadCustomers() {
+        $.ajax({
+            url: "/get_customers",  // ✅ Flask API endpoint
+            method: "GET",
+            dataType: "json",
+            success: function(customers) {
+                console.log("Customers received:", customers);  // ✅ Debugging
+                
+                let customerSelect = $("#customer-select");
+                customerSelect.empty().append('<option value="">-- Select a Customer --</option>');
+
+                if (Array.isArray(customers) && customers.length > 0) {
+                    customers.forEach(customer => {
+                        let firstName = customer.firstname || "Unknown";  
+                        let lastName = customer.lastname || "Unknown";
+
+                        customerSelect.append(`<option value="${customer.id}">${firstName} ${lastName}</option>`);
+                    });
+                } else {
+                    customerSelect.append('<option value="">No customers found</option>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", error);  // ✅ Debugging AJAX issues
+                Swal.fire("Error", "Failed to load customers. Try again.", "error");
+            }
+        });
+    }
+
+    loadCustomers(); // ✅ Fetch customers on page load
+});
+</script>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
@@ -156,6 +210,7 @@ $(document).ready(function() {
                                 <img src="static/uploads/${product.prod_img}" class="card-img-top" width="50" alt="${product.prod_name}">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">${product.prod_name}</h6>
+                                    <p class="card-text">${ product.prod_desc }</p>
                                     <p class="card-text">₱${product.prod_price}</p>
                                     <button class="btn btn-primary add-to-cart-btn" 
                                         onclick="addToCart(${product.id}, '${product.prod_name}', ${product.prod_price})">
@@ -248,7 +303,7 @@ $(document).ready(function() {
         Swal.fire("Error", "Your cart is empty", "error");
         return;
     }
-
+    
     Swal.fire({
         title: "Select Payment Method",
         input: "select",
