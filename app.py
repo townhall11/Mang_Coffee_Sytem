@@ -680,16 +680,31 @@ def place_order():
 @app.route('/ManagePayments')
 def ManagePayments():
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)  # Use dictionary cursor
+    cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM orders")  # Fetch all products
-    order_payments = cursor.fetchall()  # Use a different variable name
+    query = """
+    SELECT 
+        o.id AS order_id, 
+        c.firstname, 
+        c.lastname, 
+        p.prod_name, 
+        o.quantity, 
+        o.total_price, 
+        o.status, 
+        o.payments, 
+        o.delivery
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.id
+    JOIN products p ON o.product_id = p.id
+    """
+
+    cursor.execute(query)
+    order_payments = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
     return render_template("order.html", order_payments=order_payments, admin_name=session.get("admin_name", "Admin"))
-
 
 
 if __name__ == '__main__':

@@ -63,39 +63,40 @@
 
                     <h5 class="card-title">Payments</h5>
                     <!-- Table with stripped rows -->
-                <table class="table datatable" id="accountsTable">
-                 <thead>
-                     <tr>
-                         <th>#</th>
-                         <th>Customer</th>
-                         <th>Product</th>
-                         <th>Quantity</th>
-                         <th>Price</th>
-                         <th>Status</th>
-                         <th>Payments</th>
-                        <th>Delivery</th>
-                         <th>Actions</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     {% for product in order_payments %}
-                     <tr>
-                  <td>{{ product.id }}</td>
-                  <td>{{ product.customer_id }}</td>
-                  <td>{{ product.product_id }}</td>
-                  <td>{{ product.quantity }}</td>
-                  <td>{{ product.total_price }}</td>
-                  <td>{{ product.status }}</td>
-                   <td>{{ product.payments }}</td>
-                    <td>{{ product.delivery }}</td>
-                  <td>
+            <table class="table datatable" id="accountsTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Payments</th>
+            <th>Delivery</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in order_payments %}
+        <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.firstname }} {{ order.lastname }}</td> <!-- Customer Name -->
+            <td>{{ order.prod_name }}</td> <!-- Product Name -->
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.total_price }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.payments }}</td>
+            <td>{{ order.delivery }}</td>
+            <td>
                 <button class="btn btn-success btn-sm">Pay Order</button>
                 <button class="btn btn-danger btn-sm">Cancel</button>
-                       </td>
-                   </tr>
-                   {% endfor %}
-               </tbody>
-           </table>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 
                     <!-- End Table with stripped rows -->
 
