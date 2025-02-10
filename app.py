@@ -676,6 +676,21 @@ def place_order():
 
     return jsonify({"success": True, "message": "Order placed successfully!"})
 
+# View All Payments
+@app.route('/ManagePayments')
+def ManagePayments():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)  # Use dictionary cursor
+
+    cursor.execute("SELECT * FROM orders")  # Fetch all products
+    order_payments = cursor.fetchall()  # Use a different variable name
+
+    cursor.close()
+    conn.close()
+
+    return render_template("order.html", order_payments=order_payments, admin_name=session.get("admin_name", "Admin"))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
