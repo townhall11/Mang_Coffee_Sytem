@@ -298,25 +298,17 @@ $(document).ready(function() {
         updateCart();
     };
 
-   window.checkout = function () {
-    if (cart.length === 0) {
-        Swal.fire("Error", "Your cart is empty", "error");
-        return;
-    }
-    let customerId = $("#customer-select").val();
+    window.checkout = function () {
+        if (cart.length === 0) {
+            Swal.fire("Error", "Your cart is empty", "error");
+            return;
+        }
+
+        let customerId = $("#customer-select").val();
         if (!customerId) {
             Swal.fire("Error", "Please select a customer before checking out.", "error");
             return;
         }
-        
-    Swal.fire({
-        title: "Select Payment Method",
-        input: "select",
-        inputOptions: { "Cash": "Cash", "ATM": "ATM" },
-        showCancelButton: true,
-    }).then((paymentResult) => {
-        if (!paymentResult.isConfirmed) return;
-        let payment = paymentResult.value;
 
         Swal.fire({
             title: "Select Delivery Option",
@@ -332,9 +324,8 @@ $(document).ready(function() {
             if (!deliveryResult.isConfirmed) return;
             let delivery = deliveryResult.value;
 
-            // Ensure cart items contain necessary properties
             let orderData = cart.map(item => ({
-                product_id: item.id,  // Make sure your cart items have an `id`
+                product_id: item.id,  
                 quantity: parseInt(item.quantity, 10)
             }));
 
@@ -342,7 +333,7 @@ $(document).ready(function() {
                 url: "/place_order",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({customer_id: customerId, orders: orderData, payment, delivery }),
+                data: JSON.stringify({ customer_id: customerId, orders: orderData, delivery }),
                 success: function (response) {
                     Swal.fire("Success", response.message, "success");
                     cart = [];
@@ -354,10 +345,10 @@ $(document).ready(function() {
                 }
             });
         });
-    });
-};
+    };
 
 });
+
 </script>
 
 

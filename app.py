@@ -640,8 +640,7 @@ def place_order():
     data = request.json
     customer_id = data.get('customer_id')  # Get customer_id
     orders = data.get('orders', [])
-    payment_method = data.get('payment')
-    delivery_option = data.get('delivery')
+    delivery_option = data.get('delivery')  # Keep only delivery option
 
     if not customer_id:
         return jsonify({"success": False, "message": "Customer selection is required."}), 400
@@ -665,9 +664,9 @@ def place_order():
         total_price = float(product['prod_price']) * quantity
 
         cursor.execute("""
-            INSERT INTO orders (customer_id, product_id, quantity, total_price, payments, delivery)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (customer_id, product_id, quantity, total_price, payment_method, delivery_option))
+            INSERT INTO orders (customer_id, product_id, quantity, total_price, delivery)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (customer_id, product_id, quantity, total_price, delivery_option))
 
         new_stock = int(product['stock']) - quantity
         cursor.execute("UPDATE products SET stock = %s WHERE id = %s", (new_stock, product_id))
@@ -676,8 +675,6 @@ def place_order():
     conn.close()
 
     return jsonify({"success": True, "message": "Order placed successfully!"})
-
-
 
 
 if __name__ == '__main__':
